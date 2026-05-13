@@ -234,7 +234,7 @@ def aplicar_design():
 
         .stButton > button:hover,
         [data-testid="stDownloadButton"] button:hover {{
-            transform:translateY(-6px);
+            transform:translateY(-10px);
             border-color:rgba(81,171,255,.85) !important;
             box-shadow:0 0 34px rgba(50,145,255,.30), inset 0 1px 0 rgba(255,255,255,.14);
         }}
