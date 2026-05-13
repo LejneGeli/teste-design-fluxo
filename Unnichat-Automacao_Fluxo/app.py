@@ -115,31 +115,30 @@ def aplicar_design():
         .cess-brand {{
             display:flex;
             align-items:center;
-            gap:14px;
+            gap:22px;
         }}
         .cess-logo-wrap {{
-            width:52px;
-            height:52px;
+            width:76px;
+            height:76px;
             display:flex;
             align-items:center;
             justify-content:center;
-            flex:0 0 52px;
-            transform:translateY(-1px);
+            flex:0 0 76px;
         }}
         .cess-brand img {{
-            width:44px;
-            height:44px;
+            width:70px;
+            height:70px;
             object-fit:contain;
             display:block;
-            filter:drop-shadow(0 0 14px rgba(46,155,255,.34));
+            filter:drop-shadow(0 0 18px rgba(46,155,255,.42));
         }}
 
         .cess-title {{
-            font-size:1.9rem;
+            font-size:2.15rem;
             font-weight:800;
-            letter-spacing:-.04em;
+            letter-spacing:-.045em;
             margin:0;
-            line-height:1.1;
+            line-height:1.05;
         }}
 
         .cess-subtitle {{
@@ -326,7 +325,7 @@ def render_header(etapa=1):
             <div class="cess-brand">
                 {logo_html}
                 <div>
-                    <h1 class="cess-title">Gerador de Fluxos CESS</h1>
+                    <h1 class="cess-title">CESS • Gerador de Fluxos</h1>
                     <div class="cess-subtitle">Gere e baixe seus arquivos JSON de automação de forma simples e rápida.</div>
                 </div>
             </div>
@@ -378,17 +377,19 @@ with st.container():
     with col1:
         fluxo_label = st.selectbox(
             "Selecione o Fluxo:", 
-            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Docs (Em breve) 🔒", "GERAR TODOS"]
+            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Docs (Em breve) 🔒", "GERAR TODOS"],
+            index=None,
+            placeholder="Escolha uma opção"
         )
         map_labels = {
             "Inscrição":"1", "Pré-Inscrição":"2", "F1":"3", "F2":"4", "F2.1":"15", "F3":"5", 
             "F4":"6", "F5":"7", "F5.1":"17", "F6":"8", "F7":"9", "SC0":"19", "SC1":"11", "SC2":"12", 
             "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
         }
-        id_fluxo = map_labels[fluxo_label]
+        id_fluxo = map_labels.get(fluxo_label)
 
     with col2:
-        data_semana = st.text_input("Data do Curso (para as tags de Clique):", value="16/02")
+        data_semana = st.text_input("Data do Curso (para as tags de Clique):", value="", placeholder="Ex: 16/02")
 
 # --- LÓGICA ESPECÍFICA PARA RETOMADA ---
 ano_retomada = None
@@ -412,7 +413,7 @@ if is_retro:
         status_visual(f"💡 Modo retroativo ativo: disparos em {data_disparo_manual} e identidade do fluxo mantida como safra de {data_semana}.", "info")
 
 # --- 2. BUSCA DE DADOS ---
-if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True):
+if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True, disabled=not (fluxo_label and data_semana)):
     with st.spinner("Acessando Google Sheets..."):
         client = conectar_planilha("Informações Webhook")
         if client:
