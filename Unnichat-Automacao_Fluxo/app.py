@@ -26,7 +26,11 @@ except Exception as e:
 from src.core import processar_curso, obter_template_whatsapp
 
 # Configuração da Interface
-st.set_page_config(page_title="CESS Automation Web", page_icon="⚙️", layout="centered")
+st.set_page_config(
+    page_title="CESS Automation Web",
+    page_icon="logo-site.png",
+    layout="centered"
+)
 
 # Diretório base sempre relativo ao próprio app.py (resolve problema de cwd)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
