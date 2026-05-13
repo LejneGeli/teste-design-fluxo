@@ -26,7 +26,7 @@ except Exception as e:
 from src.core import processar_curso, obter_template_whatsapp
 
 # Configuração da Interface
-st.set_page_config(page_title="CESS Automation Web", page_icon="⚙️", layout="wide")
+st.set_page_config(page_title="CESS Automation Web", page_icon="⚙️", layout="centered")
 
 # Diretório base sempre relativo ao próprio app.py (resolve problema de cwd)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -47,40 +47,250 @@ LOGO_B64 = image_to_base64(LOGO_PATH)
 
 
 def aplicar_design():
-    logo_css = f"url('data:image/png;base64,{LOGO_B64}')" if LOGO_B64 else "none"
     st.markdown(f"""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        :root {{ --bg:#05080f; --panel:rgba(10,26,48,.80); --line:rgba(61,151,255,.28); --text:#f3f7ff; --muted:#a8b8d8; --blue:#2f9bff; }}
-        html, body, [data-testid="stAppViewContainer"] {{
-            background: radial-gradient(circle at 12% 88%, rgba(0,78,190,.42), transparent 19rem), radial-gradient(circle at 82% 15%, rgba(0,125,255,.12), transparent 20rem), linear-gradient(135deg,#030508 0%,#07101f 42%,#020409 100%) !important;
-            color: var(--text); font-family:'Inter',sans-serif;
+
+        :root {{
+            --bg:#05080f;
+            --panel:rgba(10,26,48,.84);
+            --line:rgba(61,151,255,.28);
+            --text:#f3f7ff;
+            --muted:#a8b8d8;
+            --blue:#2f9bff;
         }}
-        [data-testid="stHeader"], [data-testid="stToolbar"] {{ background:transparent !important; }}
-        [data-testid="stAppViewContainer"]::before {{ content:""; position:fixed; inset:36px 5vw; border:1px solid rgba(28,113,255,.35); border-radius:18px; box-shadow:0 0 42px rgba(0,91,255,.20), inset 0 0 70px rgba(10,88,180,.08); pointer-events:none; z-index:0; }}
-        [data-testid="stAppViewContainer"]::after {{ content:""; position:fixed; top:70px; left:7vw; width:82px; height:82px; background-image:{logo_css}; background-size:contain; background-repeat:no-repeat; background-position:center; filter:drop-shadow(0 0 18px rgba(49,155,255,.32)); pointer-events:none; z-index:0; }}
-        .main .block-container {{ max-width:980px; padding-top:5.5rem; padding-bottom:2.6rem; position:relative; z-index:1; }}
-        .cess-panel {{ padding:34px 42px 24px; border:1px solid var(--line); border-radius:18px; background:linear-gradient(180deg,rgba(15,41,73,.88),rgba(8,20,36,.82)), repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 8px); box-shadow:0 30px 90px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.06); backdrop-filter:blur(14px); margin-bottom:22px; }}
-        .cess-top {{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:28px; }}
-        .cess-brand {{ display:flex; align-items:center; gap:14px; }} .cess-brand img {{ width:54px; height:54px; object-fit:contain; filter:drop-shadow(0 0 14px rgba(46,155,255,.34)); }}
-        .cess-title {{ font-size:1.85rem; font-weight:800; letter-spacing:-.04em; margin:0; }} .cess-subtitle {{ color:var(--muted); font-size:.92rem; margin-top:4px; }}
-        .cess-badge {{ border:1px solid rgba(77,159,255,.24); background:rgba(5,12,25,.55); color:#dceaff; padding:8px 14px; border-radius:999px; font-size:.78rem; font-weight:700; white-space:nowrap; }}
-        .steps {{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; padding:8px 0 22px; border-bottom:1px solid rgba(73,150,255,.30); margin-bottom:24px; }}
-        .step {{ display:flex; align-items:center; gap:10px; color:#c7d6ef; font-weight:600; }} .step span {{ width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(120,168,255,.36); background:rgba(0,0,0,.28); color:#dce9ff; font-weight:800; }} .step.active span {{ background:linear-gradient(135deg,#5ab2ff,#166fd5); border-color:transparent; color:white; box-shadow:0 0 20px rgba(47,155,255,.45); }}
-        .section-title {{ font-size:1.35rem; font-weight:800; margin-bottom:6px; }} .section-copy {{ color:var(--muted); margin-bottom:22px; }}
-        label, [data-testid="stWidgetLabel"] p {{ color:#eef5ff !important; font-weight:600 !important; }}
-        [data-baseweb="select"] > div, [data-testid="stTextInput"] input, [data-testid="stMultiSelect"] div[data-baseweb="select"] > div {{ background:rgba(8,15,32,.78) !important; border:1px solid rgba(109,154,220,.34) !important; border-radius:10px !important; color:white !important; min-height:48px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.02); }}
-        [data-testid="stTextInput"] input:focus {{ border-color:rgba(58,156,255,.85) !important; box-shadow:0 0 0 3px rgba(58,156,255,.18) !important; }}
-        .stButton > button, [data-testid="stDownloadButton"] button {{ min-height:54px; border-radius:12px !important; border:1px solid rgba(91,84,255,.65) !important; background:linear-gradient(90deg,rgba(44,28,127,.96),rgba(21,55,137,.95)) !important; color:#fff !important; font-weight:800 !important; box-shadow:0 0 26px rgba(65,60,255,.22), inset 0 1px 0 rgba(255,255,255,.10); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }}
-        .stButton > button:hover, [data-testid="stDownloadButton"] button:hover {{ transform:translateY(-1px); border-color:rgba(81,171,255,.85) !important; box-shadow:0 0 34px rgba(50,145,255,.30), inset 0 1px 0 rgba(255,255,255,.14); }}
-        [data-testid="stCheckbox"] label {{ background:rgba(6,14,30,.36); border:1px solid rgba(94,148,220,.16); border-radius:12px; padding:12px 14px; width:100%; }}
-        hr {{ border-color:rgba(75,151,255,.24) !important; margin:1.4rem 0 !important; }} [data-testid="stAlert"] {{ border-radius:14px; border:1px solid rgba(91,163,255,.24); background:rgba(8,18,36,.72); }}
-        .cess-footer {{ display:flex; justify-content:flex-end; align-items:center; gap:10px; color:#eef4ff; font-size:.84rem; margin-top:24px; }} .cess-footer span {{ background:rgba(255,255,255,.08); border-radius:999px; padding:5px 12px; font-weight:800; }}
-        [data-testid="stCaptionContainer"] {{ text-align:center; color:rgba(225,236,255,.76) !important; }}
-        @media (max-width:900px) {{ [data-testid="stAppViewContainer"]::before {{ inset:18px; }} [data-testid="stAppViewContainer"]::after {{ display:none; }} .main .block-container {{ padding-top:2.5rem; }} .cess-panel {{ padding:24px 20px; }} .cess-top, .steps {{ grid-template-columns:1fr; display:grid; }} .cess-title {{ font-size:1.45rem; }} }}
+
+        html, body, [data-testid="stAppViewContainer"] {{
+            background:
+                radial-gradient(circle at 12% 88%, rgba(0,78,190,.34), transparent 18rem),
+                radial-gradient(circle at 82% 15%, rgba(0,125,255,.12), transparent 20rem),
+                linear-gradient(135deg,#030508 0%,#07101f 42%,#020409 100%) !important;
+            color:var(--text);
+            font-family:'Inter',sans-serif;
+        }}
+
+        [data-testid="stHeader"], [data-testid="stToolbar"] {{
+            background:transparent !important;
+        }}
+
+        [data-testid="stAppViewContainer"]::before {{
+            content:"";
+            position:fixed;
+            inset:38px 5vw;
+            border:1px solid rgba(28,113,255,.35);
+            border-radius:18px;
+            box-shadow:0 0 42px rgba(0,91,255,.20), inset 0 0 70px rgba(10,88,180,.08);
+            pointer-events:none;
+            z-index:0;
+        }}
+
+        /* Força o Streamlit a não esticar o conteúdo na tela inteira */
+        .block-container,
+        [data-testid="stMainBlockContainer"] {{
+            max-width:1040px !important;
+            width:100% !important;
+            padding-top:4.5rem !important;
+            padding-left:1.5rem !important;
+            padding-right:1.5rem !important;
+            padding-bottom:2.4rem !important;
+            margin-left:auto !important;
+            margin-right:auto !important;
+            position:relative;
+            z-index:1;
+        }}
+
+        .cess-panel {{
+            width:100%;
+            padding:32px 38px 28px;
+            border:1px solid var(--line);
+            border-radius:18px;
+            background:
+                linear-gradient(180deg,rgba(15,41,73,.90),rgba(8,20,36,.84)),
+                repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 8px);
+            box-shadow:0 30px 90px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.06);
+            backdrop-filter:blur(14px);
+            margin-bottom:24px;
+        }}
+
+        .cess-top {{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:22px;
+            margin-bottom:26px;
+        }}
+
+        .cess-brand {{ display:flex; align-items:center; gap:14px; }}
+        .cess-brand img {{
+            width:52px;
+            height:52px;
+            object-fit:contain;
+            filter:drop-shadow(0 0 14px rgba(46,155,255,.34));
+        }}
+
+        .cess-title {{
+            font-size:1.9rem;
+            font-weight:800;
+            letter-spacing:-.04em;
+            margin:0;
+            line-height:1.1;
+        }}
+
+        .cess-subtitle {{
+            color:var(--muted);
+            font-size:.92rem;
+            margin-top:8px;
+        }}
+
+        .cess-badge {{
+            border:1px solid rgba(77,159,255,.24);
+            background:rgba(5,12,25,.55);
+            color:#dceaff;
+            padding:8px 14px;
+            border-radius:999px;
+            font-size:.76rem;
+            font-weight:700;
+            white-space:nowrap;
+        }}
+
+        .steps {{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:18px;
+            padding:8px 0 22px;
+            border-bottom:1px solid rgba(73,150,255,.30);
+            margin-bottom:24px;
+        }}
+
+        .step {{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            color:#c7d6ef;
+            font-weight:600;
+        }}
+
+        .step span {{
+            width:30px;
+            height:30px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:50%;
+            border:1px solid rgba(120,168,255,.36);
+            background:rgba(0,0,0,.28);
+            color:#dce9ff;
+            font-weight:800;
+        }}
+
+        .step.active span {{
+            background:linear-gradient(135deg,#5ab2ff,#166fd5);
+            border-color:transparent;
+            color:white;
+            box-shadow:0 0 20px rgba(47,155,255,.45);
+        }}
+
+        .section-title {{ font-size:1.28rem; font-weight:800; margin-bottom:6px; }}
+        .section-copy {{ color:var(--muted); margin-bottom:0; }}
+
+        label, [data-testid="stWidgetLabel"] p {{
+            color:#eef5ff !important;
+            font-weight:600 !important;
+        }}
+
+        [data-baseweb="select"] > div,
+        [data-testid="stTextInput"] input,
+        [data-testid="stMultiSelect"] div[data-baseweb="select"] > div {{
+            background:rgba(8,15,32,.78) !important;
+            border:1px solid rgba(109,154,220,.34) !important;
+            border-radius:10px !important;
+            color:white !important;
+            min-height:48px;
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+        }}
+
+        [data-testid="stTextInput"] input:focus {{
+            border-color:rgba(58,156,255,.85) !important;
+            box-shadow:0 0 0 3px rgba(58,156,255,.18) !important;
+        }}
+
+        .stButton > button,
+        [data-testid="stDownloadButton"] button {{
+            min-height:54px;
+            border-radius:12px !important;
+            border:1px solid rgba(91,84,255,.65) !important;
+            background:linear-gradient(90deg,rgba(44,28,127,.96),rgba(21,55,137,.95)) !important;
+            color:#fff !important;
+            font-weight:800 !important;
+            box-shadow:0 0 26px rgba(65,60,255,.22), inset 0 1px 0 rgba(255,255,255,.10);
+            transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        }}
+
+        .stButton > button:hover,
+        [data-testid="stDownloadButton"] button:hover {{
+            transform:translateY(-1px);
+            border-color:rgba(81,171,255,.85) !important;
+            box-shadow:0 0 34px rgba(50,145,255,.30), inset 0 1px 0 rgba(255,255,255,.14);
+        }}
+
+        [data-testid="stCheckbox"] label {{
+            background:rgba(6,14,30,.36);
+            border:1px solid rgba(94,148,220,.16);
+            border-radius:12px;
+            padding:12px 14px;
+            width:100%;
+        }}
+
+        hr {{
+            border-color:rgba(75,151,255,.24) !important;
+            margin:1.4rem 0 !important;
+        }}
+
+        [data-testid="stAlert"] {{
+            border-radius:14px;
+            border:1px solid rgba(91,163,255,.24);
+            background:rgba(8,18,36,.72);
+        }}
+
+        .cess-footer {{
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+            gap:10px;
+            color:#eef4ff;
+            font-size:.84rem;
+            margin-top:24px;
+        }}
+
+        .cess-footer span {{
+            background:rgba(255,255,255,.08);
+            border-radius:999px;
+            padding:5px 12px;
+            font-weight:800;
+        }}
+
+        [data-testid="stCaptionContainer"] {{
+            text-align:center;
+            color:rgba(225,236,255,.76) !important;
+        }}
+
+        @media (max-width:900px) {{
+            [data-testid="stAppViewContainer"]::before {{ inset:18px; }}
+            .block-container,
+            [data-testid="stMainBlockContainer"] {{
+                padding-top:2.5rem !important;
+                padding-left:1rem !important;
+                padding-right:1rem !important;
+            }}
+            .cess-panel {{ padding:24px 20px; }}
+            .cess-top {{ display:grid; grid-template-columns:1fr; }}
+            .steps {{ grid-template-columns:1fr; }}
+            .step {{ justify-content:flex-start; }}
+            .cess-title {{ font-size:1.45rem; }}
+        }}
     </style>
     """, unsafe_allow_html=True)
-
 
 def render_header(etapa=1):
     active_1 = "active" if etapa == 1 else ""
