@@ -6,6 +6,7 @@ import re
 import os
 import sys
 import base64
+from PIL import Image
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,9 +27,11 @@ except Exception as e:
 from src.core import processar_curso, obter_template_whatsapp
 
 # Configuração da Interface
+favicon = Image.open("logo-site.png")
+
 st.set_page_config(
     page_title="CESS Automation Web",
-    page_icon="logo-site.png",
+    page_icon=favicon,
     layout="centered"
 )
 
