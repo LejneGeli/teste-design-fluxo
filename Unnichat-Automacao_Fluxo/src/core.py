@@ -122,11 +122,11 @@ def aplicar_linguagem_congresso(json_data):
         for origem, destino in substituicoes:
             texto = texto.replace(origem, destino)
 
-            texto = texto.replace("Acessar Palestras e Mat.", "Acessar Palestra/PDF")
-            texto = texto.replace("Acessar palestras e mat.", "Acessar Palestra/PDF")
-            texto = texto.replace("ACESSAR PALESTRAS E MAT.", "Acessar Palestra/PDF")
+        texto = texto.replace("Acessar Palestras e Mat.", "Acessar Palestra/PDF")
+        texto = texto.replace("Acessar palestras e mat.", "Acessar Palestra/PDF")
+        texto = texto.replace("ACESSAR PALESTRAS E MAT.", "Acessar Palestra/PDF")
 
-            return texto
+        return texto
 
     def percorrer(obj, chave_pai=""):
         if isinstance(obj, dict):
