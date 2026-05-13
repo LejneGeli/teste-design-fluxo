@@ -357,6 +357,11 @@ def render_header(etapa=1):
 def status_visual(mensagem, tipo="info"):
     st.markdown(f'<div class="cess-status {tipo}">{mensagem}</div>', unsafe_allow_html=True)
 
+def identificar_tipo_evento(nome_item):
+    """Congressos começam com número; cursos começam com letra."""
+    nome = str(nome_item or "").strip()
+    return "congresso" if nome[:1].isdigit() else "curso"
+
 aplicar_design()
 
 # Mapeamento Global dos Fluxos
@@ -487,35 +492,6 @@ if 'cursos' in st.session_state:
         st.session_state['cursos']
     )
 
-    possui_congressos = st.checkbox("🏛️ Este lote possui congressos?")
-    cursos_congresso = []
-    gerar_versao_normal = False
-
-    if possui_congressos:
-        cursos_congresso = st.multiselect(
-            "Selecione quais itens são congressos:",
-            st.session_state['cursos'],
-            placeholder="Escolha os congressos"
-        )
-
-        gerar_versao_normal = st.checkbox(
-            "Também gerar versão normal dos fluxos",
-            help="Quando marcado, além dos congressos selecionados, o sistema também gera os itens normais que não foram selecionados como congresso."
-        )
-
-        if cursos_congresso and gerar_versao_normal:
-            status_visual(
-                f"🏛️ {len(cursos_congresso)} congresso(s) selecionado(s). Os demais itens serão gerados como curso normal.",
-                "info"
-            )
-        elif cursos_congresso:
-            status_visual(
-                f"🏛️ {len(cursos_congresso)} congresso(s) selecionado(s). Apenas eles serão gerados.",
-                "info"
-            )
-        else:
-            status_visual("Marque quais itens são congressos para gerar a versão de congresso.", "warning")
-
     if id_fluxo == "14":
         status_visual("🔒 O fluxo de Docs ainda está em desenvolvimento e o template não foi carregado.", "warning")
         btn_disabled = True
@@ -534,21 +510,7 @@ if 'cursos' in st.session_state:
         cores_por_indice = st.session_state.get('cores_por_indice', {})
 
         todos_os_cursos = st.session_state['cursos']
-        universo_normal = curso_filtro if curso_filtro else todos_os_cursos
-        cursos_congresso_set = set(cursos_congresso)
-
-        # Mantém o comportamento antigo quando a opção de congresso não está marcada.
-        # Quando marcada:
-        # - sempre gera os itens selecionados como congresso;
-        # - só gera os itens normais se a checkbox extra estiver marcada.
-        if possui_congressos:
-            cursos_normais_set = set(universo_normal) - cursos_congresso_set if gerar_versao_normal else set()
-        else:
-            cursos_normais_set = set(universo_normal)
-
-        if possui_congressos and not cursos_congresso_set and not cursos_normais_set:
-            status_visual("Selecione pelo menos um congresso ou marque a opção para gerar a versão normal.", "warning")
-            st.stop()
+        cursos_selecionados_set = set(curso_filtro if curso_filtro else todos_os_cursos)
         
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for config in fluxos_alvo:
@@ -564,7 +526,7 @@ if 'cursos' in st.session_state:
                         if not linha_aux or not linha_aux[0].strip() or (len(linha_aux) > 1 and "Semana" in str(linha_aux[1])):
                             break
                         nome_aux = linha_aux[0].strip()
-                        if nome_aux in cursos_normais_set or nome_aux in cursos_congresso_set:
+                        if nome_aux in cursos_selecionados_set:
                             total_cursos_semana += 1
                 
                 for i in range(st.session_state['index_inicio'], len(st.session_state['dados_planilha'])):
@@ -573,57 +535,45 @@ if 'cursos' in st.session_state:
                         break
                     
                     nome_curso = linha[0].strip()
-                    gerar_como_congresso = nome_curso in cursos_congresso_set
-                    gerar_como_normal = nome_curso in cursos_normais_set
-
-                    if not gerar_como_congresso and not gerar_como_normal:
+                    if nome_curso not in cursos_selecionados_set:
                         continue
 
-                    versoes_para_gerar = []
-                    if gerar_como_normal:
-                        versoes_para_gerar.append("curso")
-                    if gerar_como_congresso:
-                        versoes_para_gerar.append("congresso")
+                    tipo_evento = identificar_tipo_evento(nome_curso)
+                    modo_congresso = tipo_evento == "congresso"
 
-                    for tipo_evento in versoes_para_gerar:
-                        cor_curso = cores_por_indice.get(i, "#FFFFFF")
-                        conta_pasta = mapeamento_contas.get(cor_curso, "Sem_Conta")
+                    cor_curso = cores_por_indice.get(i, "#FFFFFF")
+                    conta_pasta = mapeamento_contas.get(cor_curso, "Sem_Conta")
 
-                        chave_contador = f"{conta_pasta}_{tipo_evento}"
-                        if chave_contador not in contadores_por_conta:
-                            contadores_por_conta[chave_contador] = 0
+                    if conta_pasta not in contadores_por_conta:
+                        contadores_por_conta[conta_pasta] = 0
 
-                        contador_delay_conta = contadores_por_conta[chave_contador]
-                        dados_template_whatsapp = obter_template_whatsapp(conta_pasta, config["nome"], tipo_evento=tipo_evento)
-                        modo_congresso = tipo_evento == "congresso"
+                    contador_delay_conta = contadores_por_conta[conta_pasta]
+                    dados_template_whatsapp = obter_template_whatsapp(conta_pasta, config["nome"], tipo_evento=tipo_evento)
+                    
+                    try:
+                        json_data = processar_curso(
+                            linha, 
+                            data_semana, 
+                            config['path'], 
+                            contador_delay_conta, 
+                            tipo_fluxo=nome_fluxo_ativo,
+                            data_disparo=data_disparo_manual,
+                            ano_retomada=ano_retomada,
+                            total_cursos=total_cursos_semana,
+                            dados_template_whatsapp=dados_template_whatsapp,
+                            usar_delay_retomada=(nome_fluxo_ativo == "RETOMADA"),
+                            modo_congresso=modo_congresso
+                        )
                         
-                        try:
-                            json_data = processar_curso(
-                                linha, 
-                                data_semana, 
-                                config['path'], 
-                                contador_delay_conta, 
-                                tipo_fluxo=nome_fluxo_ativo,
-                                data_disparo=data_disparo_manual,
-                                ano_retomada=ano_retomada,
-                                total_cursos=total_cursos_semana,
-                                dados_template_whatsapp=dados_template_whatsapp,
-                                usar_delay_retomada=(nome_fluxo_ativo == "RETOMADA"),
-                                modo_congresso=modo_congresso
-                            )
-                            
-                            nome_limpo = nome_curso.replace(" ", "_").replace("/", "-").replace(":", "")
-                            if modo_congresso:
-                                caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
-                            else:
-                                caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
-                            
-                            zip_file.writestr(caminho_zip, json.dumps(json_data, indent=2, ensure_ascii=False))
-                            arquivos_criados += 1
-                            contadores_por_conta[chave_contador] += 1
-                        except Exception as e:
-                            tipo_label = "congresso" if modo_congresso else "curso"
-                            status_visual(f"Erro no {tipo_label} '{nome_curso}': {e}", "error")
+                        nome_limpo = nome_curso.replace(" ", "_").replace("/", "-").replace(":", "")
+                        caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
+                        
+                        zip_file.writestr(caminho_zip, json.dumps(json_data, indent=2, ensure_ascii=False))
+                        arquivos_criados += 1
+                        contadores_por_conta[conta_pasta] += 1
+                    except Exception as e:
+                        tipo_label = "congresso" if modo_congresso else "curso"
+                        status_visual(f"Erro no {tipo_label} '{nome_curso}': {e}", "error")
         
         if arquivos_criados > 0:
             st.session_state["zip_gerado"] = zip_buffer.getvalue()
