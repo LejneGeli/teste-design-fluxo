@@ -73,34 +73,22 @@ def aplicar_design():
             background:transparent !important;
         }}
 
-        [data-testid="stAppViewContainer"]::before {{
-            content:"";
-            position:fixed;
-            top:38px;
-            left:50%;
-            transform:translateX(-50%);
-            width:min(1120px, calc(100vw - 80px));
-            height:calc(100vh - 76px);
-            border:1px solid rgba(28,113,255,.35);
-            border-radius:18px;
-            box-shadow:0 0 42px rgba(0,91,255,.20), inset 0 0 70px rgba(10,88,180,.08);
-            pointer-events:none;
-            z-index:0;
-        }}
-
-        /* Força o Streamlit a não esticar o conteúdo na tela inteira */
+        /* Moldura principal dinâmica: cresce junto com o conteúdo da página */
         .block-container,
         [data-testid="stMainBlockContainer"] {{
             max-width:1040px !important;
             width:100% !important;
-            padding-top:4.5rem !important;
+            padding-top:3.2rem !important;
             padding-left:1.5rem !important;
             padding-right:1.5rem !important;
             padding-bottom:2.4rem !important;
-            margin-left:auto !important;
-            margin-right:auto !important;
+            margin:3.5rem auto 2.5rem auto !important;
             position:relative;
             z-index:1;
+            border:1px solid rgba(28,113,255,.35);
+            border-radius:18px;
+            background:rgba(3,10,22,.22);
+            box-shadow:0 0 42px rgba(0,91,255,.20), inset 0 0 70px rgba(10,88,180,.08);
         }}
 
         .cess-panel {{
@@ -136,7 +124,7 @@ def aplicar_design():
             align-items:center;
             justify-content:center;
             flex:0 0 52px;
-            transform:translateY(1px);
+            transform:translateY(-1px);
         }}
         .cess-brand img {{
             width:44px;
@@ -311,13 +299,9 @@ def aplicar_design():
         }}
 
         @media (max-width:900px) {{
-            [data-testid="stAppViewContainer"]::before {{
-                top:18px;
-                width:calc(100vw - 36px);
-                height:calc(100vh - 36px);
-            }}
             .block-container,
             [data-testid="stMainBlockContainer"] {{
+                margin:1.2rem auto 1.2rem auto !important;
                 padding-top:2.5rem !important;
                 padding-left:1rem !important;
                 padding-right:1rem !important;
