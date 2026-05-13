@@ -76,7 +76,11 @@ def aplicar_design():
         [data-testid="stAppViewContainer"]::before {{
             content:"";
             position:fixed;
-            inset:38px 5vw;
+            top:38px;
+            left:50%;
+            transform:translateX(-50%);
+            width:min(1120px, calc(100vw - 80px));
+            height:calc(100vh - 76px);
             border:1px solid rgba(28,113,255,.35);
             border-radius:18px;
             box-shadow:0 0 42px rgba(0,91,255,.20), inset 0 0 70px rgba(10,88,180,.08);
@@ -120,11 +124,25 @@ def aplicar_design():
             margin-bottom:26px;
         }}
 
-        .cess-brand {{ display:flex; align-items:center; gap:14px; }}
-        .cess-brand img {{
+        .cess-brand {{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }}
+        .cess-logo-wrap {{
             width:52px;
             height:52px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex:0 0 52px;
+            transform:translateY(1px);
+        }}
+        .cess-brand img {{
+            width:44px;
+            height:44px;
             object-fit:contain;
+            display:block;
             filter:drop-shadow(0 0 14px rgba(46,155,255,.34));
         }}
 
@@ -248,10 +266,27 @@ def aplicar_design():
         }}
 
         [data-testid="stAlert"] {{
-            border-radius:14px;
-            border:1px solid rgba(91,163,255,.24);
-            background:rgba(8,18,36,.72);
+            border-radius:12px;
+            border:0 !important;
+            background:transparent !important;
+            box-shadow:none !important;
+            padding-left:0 !important;
+            padding-right:0 !important;
         }}
+
+        .cess-status {{
+            margin:16px 0 6px;
+            padding:0;
+            border:0;
+            background:transparent;
+            color:#cfe0ff;
+            font-size:.94rem;
+            font-weight:600;
+        }}
+        .cess-status.success {{ color:#53f29a; }}
+        .cess-status.warning {{ color:#ffd166; }}
+        .cess-status.error {{ color:#ff7676; }}
+        .cess-status.info {{ color:#65b7ff; }}
 
         .cess-footer {{
             display:flex;
@@ -276,7 +311,11 @@ def aplicar_design():
         }}
 
         @media (max-width:900px) {{
-            [data-testid="stAppViewContainer"]::before {{ inset:18px; }}
+            [data-testid="stAppViewContainer"]::before {{
+                top:18px;
+                width:calc(100vw - 36px);
+                height:calc(100vh - 36px);
+            }}
             .block-container,
             [data-testid="stMainBlockContainer"] {{
                 padding-top:2.5rem !important;
@@ -296,7 +335,7 @@ def render_header(etapa=1):
     active_1 = "active" if etapa == 1 else ""
     active_2 = "active" if etapa == 2 else ""
     active_3 = "active" if etapa == 3 else ""
-    logo_html = f'<img src="data:image/png;base64,{LOGO_B64}" alt="Logo CESS Automation">' if LOGO_B64 else ''
+    logo_html = f'<div class="cess-logo-wrap"><img src="data:image/png;base64,{LOGO_B64}" alt="Logo CESS Automation"></div>' if LOGO_B64 else ''
     st.markdown(f"""
     <div class="cess-panel">
         <div class="cess-top">
@@ -318,6 +357,9 @@ def render_header(etapa=1):
         <div class="section-copy">Preencha as informações abaixo para gerar seu fluxo de automação.</div>
     </div>
     """, unsafe_allow_html=True)
+
+def status_visual(mensagem, tipo="info"):
+    st.markdown(f'<div class="cess-status {tipo}">{mensagem}</div>', unsafe_allow_html=True)
 
 aplicar_design()
 
@@ -367,13 +409,13 @@ with st.container():
 # --- LÓGICA ESPECÍFICA PARA RETOMADA ---
 ano_retomada = None
 if fluxo_label == "RETOMADA":
-    st.info("📂 **Configuração de Retomada**")
+    status_visual("📂 Configuração de Retomada", "info")
     nome_fluxo_retomada = st.text_input("Nome do Fluxo (Ex: Retomada - T 2023):", placeholder="Retomada - T 2023")
     match_ano = re.search(r"202\d", nome_fluxo_retomada)
     if match_ano:
         ano_retomada = match_ano.group(0)
     else:
-        st.warning("⚠️ Digite o ano no campo acima para gerar os links corretamente.")
+        status_visual("⚠️ Digite o ano no campo acima para gerar os links corretamente.", "warning")
 
 # --- LÓGICA DE FLUXO RETROATIVO ---
 st.divider()
@@ -383,12 +425,7 @@ data_disparo_manual = None
 if is_retro:
     data_disparo_manual = st.text_input("Data da Segunda-feira que vai RODAR (DD/MM):", placeholder="Ex: 02/02")
     if data_disparo_manual:
-        st.info(f"""
-        💡 **Modo Retroativo Ativado:**
-        * **Tags de Inscritos (Exclusão):** Geradas para a semana de **{data_disparo_manual}** (D+0, D+7, D+14).
-        * **Agendamento (Timestamps):** Programados para a semana de **{data_disparo_manual}** (Terça a Sexta).
-        * **Identidade do Fluxo:** Mantida como safra de **{data_semana}** (Cliques e Tags Internas).
-        """)
+        status_visual(f"💡 Modo retroativo ativo: disparos em {data_disparo_manual} e identidade do fluxo mantida como safra de {data_semana}.", "info")
 
 # --- 2. BUSCA DE DADOS ---
 if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True):
@@ -432,19 +469,15 @@ if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True):
                     st.session_state['mapeamento_contas'] = mapeamento_contas
                     st.session_state['cores_por_indice'] = cores_por_indice
 
-                    st.success(f"✅ {len(cursos_encontrados)} cursos encontrados!")
-
                     if mapeamento_contas:
-                        itens = " · ".join(
-                            [f"**{conta}** `{hex_cor}`" for hex_cor, conta in mapeamento_contas.items()]
-                        )
-                        st.info(f"🎨 Contas detectadas: {itens}")
+                        contas = ", ".join(sorted(set(mapeamento_contas.values())))
+                        status_visual(f"✅ {len(cursos_encontrados)} cursos encontrados. Contas detectadas: {contas}.", "success")
                     else:
-                        st.warning("⚠️ Não foi possível detectar as cores das contas. Verifique a aba 'Como funciona?'.")
+                        status_visual(f"✅ {len(cursos_encontrados)} cursos encontrados. ⚠️ As cores das contas não foram detectadas.", "warning")
                 else:
-                    st.error(f"❌ A data '{data_semana}' não foi encontrada na Coluna B da planilha.")
+                    status_visual(f"❌ A data '{data_semana}' não foi encontrada na Coluna B da planilha.", "error")
             except Exception as e:
-                st.error(f"❌ Erro ao abrir a planilha/aba: {e}")
+                status_visual(f"❌ Erro ao abrir a planilha/aba: {e}", "error")
 
 # --- 3. FILTRO E GERAÇÃO ---
 if 'cursos' in st.session_state:
@@ -457,7 +490,7 @@ if 'cursos' in st.session_state:
     )
 
     if id_fluxo == "14":
-        st.warning("🔒 O fluxo de **Docs** ainda está em desenvolvimento e o template não foi carregado.")
+        status_visual("🔒 O fluxo de Docs ainda está em desenvolvimento e o template não foi carregado.", "warning")
         btn_disabled = True
     else:
         btn_disabled = False
@@ -527,20 +560,20 @@ if 'cursos' in st.session_state:
                         arquivos_criados += 1
                         contadores_por_conta[conta_pasta] += 1
                     except Exception as e:
-                        st.error(f"Erro no curso '{nome_curso}': {e}")
+                        status_visual(f"Erro no curso '{nome_curso}': {e}", "error")
         
         if arquivos_criados > 0:
             st.session_state["zip_gerado"] = zip_buffer.getvalue()
             st.session_state["zip_nome"] = f"automacao_cess_{data_semana.replace('/','-')}.zip"
             st.session_state["arquivos_criados"] = arquivos_criados
-            st.success(f"🚀 {arquivos_criados} arquivos processados!")
+            status_visual(f"🚀 {arquivos_criados} arquivos processados.", "success")
         else:
-            st.warning("Nenhum arquivo gerado.")
+            status_visual("Nenhum arquivo gerado.", "warning")
 
 if "zip_gerado" in st.session_state:
     st.divider()
     st.subheader("Download")
-    st.success(f"✅ Pronto! {st.session_state.get('arquivos_criados', 0)} arquivos estão preparados para baixar.")
+    status_visual(f"✅ Pronto! {st.session_state.get('arquivos_criados', 0)} arquivos estão preparados para baixar.", "success")
     st.download_button(
         label="⬇️ Baixar Arquivos (.ZIP)",
         data=st.session_state["zip_gerado"],
