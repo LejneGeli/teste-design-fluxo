@@ -1,0 +1,189 @@
+
+{
+  "name": "{{DT_INICIO_CURSO_FORMAT}} Pré-Inscrição - {{NOME_CURSO}}",
+  "category": "automation",
+  "status": "idle",
+  "connectionType": "whatsapp",
+  "folderId": "edLL5IPY0PMDH6vv5Pin",
+  "node": {
+    "type": {
+      "id": "OcZ3MwqbRtXIpkG1czMF",
+      "color": "transparent",
+      "icon": "init",
+      "tag": "init"
+    },
+    "pos": "{\"x\":0,\"y\":0}",
+    "id": "tLOBRLbyffm2pB5TxqOm",
+    "sonId": "IvhZmHMyqxV9S5bDYnCC",
+    "nodes": [
+      {
+        "pos": "{\"x\":1723.8992188664586,\"y\":1.6907625782167486}",
+        "type": {
+          "tag": "httpRequest",
+          "color": "transparent",
+          "id": "httpRequest",
+          "icon": ""
+        },
+        "id": "4BrUySeVB8wGKUMhDKTh",
+        "httpRequest": {
+          "method": "post",
+          "headerFields": [],
+          "hasCustomBody": false,
+          "customBody": "",
+          "link": "{{LINK_WEBHOOK_PLANILHA}}"
+        },
+        "lastEditedBy": "karloscess7@gmail.com"
+      },
+      {
+        "id": "8pJI01qwxS4aFIApHarI",
+        "lastEditedBy": "cessetembro@gmail.com",
+        "sonId": "4BrUySeVB8wGKUMhDKTh",
+        "pos": "{\"x\":1365.8467253818521,\"y\":-4.6344216620181555}",
+        "type": {
+          "icon": "",
+          "tag": "action",
+          "id": "action",
+          "color": "transparent"
+        },
+        "action": {
+          "forceAttribution": false,
+          "unniiaAtributionOnly": false,
+          "keepChatActive": false,
+          "unniiaForceReply": false,
+          "userResourceGroupSendRandomic": false,
+          "type": "remove_tag",
+          "tags": [
+            "Bloquear Envios"
+          ]
+        }
+      },
+      {
+        "type": {
+          "id": "note",
+          "color": "transparent",
+          "tag": "note",
+          "icon": ""
+        },
+        "id": "9lDIyoiWzg5hOmlJ8YpG",
+        "pos": "{\"x\":644.3867611486044,\"y\":-42.2997599029552}",
+        "note": {
+          "size": [
+            319,
+            379
+          ],
+          "color": "#fde68a",
+          "text": ""
+        }
+      },
+      {
+        "pos": "{\"x\":335.55154878252324,\"y\":2.5039822609006563}",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "sonId": "NBe5OttsH26CmUksQMxz",
+        "id": "IvhZmHMyqxV9S5bDYnCC",
+        "action": {
+          "type": "add_tag",
+          "userResourceGroupSendRandomic": false,
+          "keepChatActive": false,
+          "unniiaAtributionOnly": false,
+          "forceAttribution": false,
+          "tags": [
+            "{{TAG_INSC_GERAL}}"
+          ]
+        },
+        "type": {
+          "icon": "",
+          "tag": "action",
+          "id": "action",
+          "color": "transparent"
+        }
+      },
+      {
+        "pos": "{\"x\":665.9966795666552,\"y\":7.8610620868477525}",
+        "sonId": "QX2S6C5cbUPdSF64UjYY",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "NBe5OttsH26CmUksQMxz",
+        "action": {
+          "keepChatActive": false,
+          "unniiaAtributionOnly": false,
+          "forceAttribution": false,
+          "type": "add_tag",
+          "userResourceGroupSendRandomic": false,
+          "tags": [
+            "{{TAG_FOI_PLANILHA}}"
+          ]
+        },
+        "type": {
+          "icon": "",
+          "tag": "action",
+          "color": "transparent",
+          "id": "action"
+        }
+      },
+      {
+        "type": {
+          "icon": "",
+          "tag": "conditionalV2",
+          "color": "transparent",
+          "id": "conditionalV2"
+        },
+        "conditionalV2": {
+          "groupConditions": [
+            {
+              "conditions": [
+                {
+                  "tags": [
+                    "Bloquear Envios"
+                  ],
+                  "type": "contains-some-tag"
+                }
+              ],
+              "conditionType": "or",
+              "sonId": "8pJI01qwxS4aFIApHarI"
+            }
+          ],
+          "falseId": "4BrUySeVB8wGKUMhDKTh"
+        },
+        "id": "QX2S6C5cbUPdSF64UjYY",
+        "lastEditedBy": "cessetembro@gmail.com",
+        "pos": "{\"x\":1021.0136454000433,\"y\":-35.394179970254605}"
+      },
+      {
+        "note": {
+          "size": [
+            319,
+            379
+          ],
+          "color": "#fde68a",
+          "text": ""
+        },
+        "pos": "{\"x\":312.9929147158498,\"y\":-39.59553929376466}",
+        "id": "gVWdAXV2iQtlD3mFKaNj",
+        "type": {
+          "icon": "",
+          "tag": "note",
+          "id": "note",
+          "color": "transparent"
+        }
+      },
+      {
+        "note": {
+          "size": [
+            338,
+            497
+          ],
+          "color": "#fdf1cc",
+          "text": ""
+        },
+        "pos": "{\"x\":1691.6565635173279,\"y\":-39.524305537359766}",
+        "id": "qv4MyglXmemDK20UHMRl",
+        "type": {
+          "icon": "",
+          "color": "transparent",
+          "id": "note",
+          "tag": "note"
+        }
+      }
+    ]
+  },
+  "customFieldsToCreate": {}
+}
