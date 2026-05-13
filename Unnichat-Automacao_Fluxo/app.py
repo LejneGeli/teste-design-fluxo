@@ -131,6 +131,7 @@ def aplicar_design():
             object-fit:contain;
             display:block;
             filter:drop-shadow(0 0 18px rgba(46,155,255,.42));
+            transform: translateY(-8px);
         }}
 
         .cess-title {{
