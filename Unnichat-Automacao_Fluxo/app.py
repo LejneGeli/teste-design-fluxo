@@ -614,7 +614,7 @@ if 'cursos' in st.session_state:
                             
                             nome_limpo = nome_curso.replace(" ", "_").replace("/", "-").replace(":", "")
                             if modo_congresso:
-                                caminho_zip = f"{config['subpasta']}/Congressos/{conta_pasta}/{nome_limpo}.json"
+                                caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
                             else:
                                 caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
                             
