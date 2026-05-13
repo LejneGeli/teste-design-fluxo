@@ -60,8 +60,86 @@ def calcular_delay_retomada(total_cursos):
         return 40
 
 
-def obter_template_whatsapp(conta, fluxo):
-    return TEMPLATES_WHATSAPP.get(conta, {}).get(fluxo)
+def obter_template_whatsapp(conta, fluxo, tipo_evento="curso"):
+    """
+    Busca o template de WhatsApp pela conta e pelo fluxo.
+
+    Para congressos, tenta primeiro chaves específicas que você pode cadastrar
+    manualmente no TEMPLATES_WHATSAPP, por exemplo:
+      - "Fluxo 1 Congresso"
+      - "Congresso Fluxo 1"
+      - "SC1 Congresso"
+
+    Se nenhuma chave específica existir, usa o template normal como fallback.
+    """
+    templates_conta = TEMPLATES_WHATSAPP.get(conta, {})
+
+    if tipo_evento == "congresso":
+        chaves_congresso = [
+            f"{fluxo} Congresso",
+            f"Congresso {fluxo}",
+            f"{fluxo} - Congresso",
+            f"{fluxo}_Congresso",
+        ]
+        for chave in chaves_congresso:
+            if chave in templates_conta:
+                return templates_conta[chave]
+
+    return templates_conta.get(fluxo)
+
+
+def aplicar_linguagem_congresso(json_data):
+    """Troca textos de curso/aula para congresso/palestra sem mexer em links e IDs."""
+
+    def converter_texto(texto):
+        if not isinstance(texto, str):
+            return texto
+
+        texto_lower = texto.lower()
+        if (
+            texto_lower.startswith("http")
+            or "www." in texto_lower
+            or "connectionid" in texto_lower
+            or "wabaid" in texto_lower
+            or "userid" in texto_lower
+        ):
+            return texto
+
+        substituicoes = [
+            ("Cursos", "Congressos"),
+            ("cursos", "congressos"),
+            ("CURSOS", "CONGRESSOS"),
+            ("Curso", "Congresso"),
+            ("curso", "congresso"),
+            ("CURSO", "CONGRESSO"),
+            ("Aulas", "Palestras"),
+            ("aulas", "palestras"),
+            ("AULAS", "PALESTRAS"),
+            ("Aula", "Palestra"),
+            ("aula", "palestra"),
+            ("AULA", "PALESTRA"),
+        ]
+        for origem, destino in substituicoes:
+            texto = texto.replace(origem, destino)
+        return texto
+
+    def percorrer(obj, chave_pai=""):
+        if isinstance(obj, dict):
+            for chave, valor in obj.items():
+                chave_lower = str(chave).lower()
+                if isinstance(valor, str):
+                    # Evita alterar campos técnicos de integração.
+                    if any(bloqueado in chave_lower for bloqueado in ["id", "link", "webhook", "url"]):
+                        continue
+                    obj[chave] = converter_texto(valor)
+                else:
+                    percorrer(valor, chave)
+        elif isinstance(obj, list):
+            for item in obj:
+                percorrer(item, chave_pai)
+
+    percorrer(json_data)
+    return json_data
 
 
 def aplicar_template_whatsapp(json_data, dados_template):
@@ -294,6 +372,7 @@ def processar_curso(
     total_cursos=None,
     dados_template_whatsapp=None,
     usar_delay_retomada=False,
+    modo_congresso=False,
 ):
     # --- 1. LÓGICA DE DEFINIÇÃO DA DATA DE DISPARO ---
     if data_disparo:
@@ -534,4 +613,8 @@ def processar_curso(
 
     json_data = json.loads(conteudo)
     json_data = aplicar_template_whatsapp(json_data, dados_template_whatsapp)
+
+    if modo_congresso:
+        json_data = aplicar_linguagem_congresso(json_data)
+
     return json_data
