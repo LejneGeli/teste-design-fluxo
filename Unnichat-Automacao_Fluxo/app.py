@@ -27,7 +27,12 @@ except Exception as e:
 from src.core import processar_curso, obter_template_whatsapp
 
 # Configuração da Interface
-favicon = Image.open("logo-site.png")
+favicon_path = os.path.join(BASE_DIR, "logo-site.png")
+
+if os.path.exists(favicon_path):
+    favicon = Image.open(favicon_path)
+else:
+    favicon = "⚙️"
 
 st.set_page_config(
     page_title="CESS Automation Web",
