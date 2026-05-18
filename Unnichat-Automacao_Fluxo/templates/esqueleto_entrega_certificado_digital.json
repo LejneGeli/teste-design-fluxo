@@ -27,7 +27,7 @@
     "nodes": [
       {
         "message": {
-          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏",
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/{{CD_CURSO_AULAS}}\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏",
           "links": [
             {
               "campaignId": "aTI1PygQ4RMRFAMAYrI2",
@@ -166,7 +166,7 @@
               "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
             }
           ],
-          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/{{CD_CURSO_AULAS}}\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
         }
       },
       {
@@ -180,7 +180,7 @@
         "id": "A8iRJCGmg4VhQwQyZasn",
         "lastEditedBy": "carolinelejnecess7@gmail.com",
         "message": {
-          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de Auriculoterapia, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
+          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de {{NOME_CURSO}}, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
           "type": "send_message",
           "messageType": "interactive-message",
           "interactiveType": "reply-button",
@@ -394,7 +394,7 @@
         "message": {
           "messageType": "interactive-message",
           "type": "send_message",
-          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de Auriculoterapia, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
+          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de {{NOME_CURSO}}, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
           "interactiveType": "reply-button",
           "buttons": [
             {
@@ -1154,7 +1154,7 @@
               "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
             }
           ],
-          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/{{CD_CURSO_AULAS}}\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
         },
         "sonId": "67LVLYrZCr4qg3YJTMgV"
       }
