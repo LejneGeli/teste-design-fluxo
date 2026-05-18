@@ -168,6 +168,16 @@ def aplicar_template_whatsapp(json_data, dados_template):
     if not dados_template:
         return json_data
 
+    # Estrutura de cadastro manual:
+    # se algum campo ainda estiver em branco ou com "COLE_AQUI",
+    # a automação não força a troca do template no JSON.
+    # Assim você pode deixar a estrutura pronta e preencher depois sem quebrar a geração.
+    campos_obrigatorios = ["nome", "connectionId", "wabaId", "userId", "id"]
+    for campo in campos_obrigatorios:
+        valor = str(dados_template.get(campo, "")).strip()
+        if not valor or "COLE_AQUI" in valor:
+            return json_data
+
     def percorrer(obj):
         if isinstance(obj, dict):
             if obj.get("type") == "send_template" or "templateDataJson" in obj:
@@ -287,6 +297,20 @@ TEMPLATES_WHATSAPP = {
             "wabaId": "551316877339100",
             "userId": "3jNt3SinWzW08N7iqGhu473b7M53",
             "id": "1515771696739423"
+        },
+        'Entrega - Certificado Digital':{
+            'nome': "m1_entrega_certificado_curso_c1",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "1550361646687896"
+        },
+        'Entrega - Certificado Digital Congresso': {
+            'nome': "m1_entrega_certificado_congresso_c1",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+             'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "1300209292304188"
         }
     },
     "Conta_2": {
@@ -373,6 +397,20 @@ TEMPLATES_WHATSAPP = {
             "wabaId": "643489112180162",
             "userId": "3jNt3SinWzW08N7iqGhu473b7M53",
             "id": "945328344776651"
+        },
+        'Entrega - Certificado Digital':{
+            'nome': "m1_entrega_certificado_curso_c2",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "3312044972308387"
+        },
+        'Entrega - Certificado Digital Congresso': {
+            'nome': "m1_entrega_certificado_congresso_c2",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "1758624955153309"
         }
     },
     "Conta_3": {
@@ -459,6 +497,20 @@ TEMPLATES_WHATSAPP = {
             "wabaId": "1488880795714059",
             "userId": "3jNt3SinWzW08N7iqGhu473b7M53",
             "id": "890898067333698"
+        },
+        'Entrega - Certificado Digital':{
+            'nome': "m2_entrega_certificado_curso_c3",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "1764809034485592"
+        },
+        'Entrega - Certificado Digital Congresso': {
+            'nome': "m1_entrega_certificado_congresso_c3",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "26826007523729394"
         }
     },
     "Conta_4": {
@@ -545,6 +597,20 @@ TEMPLATES_WHATSAPP = {
             "wabaId": "4237462246578095",
             "userId": "3jNt3SinWzW08N7iqGhu473b7M53",
             "id": "1459372082386644"
+        },
+        'Entrega - Certificado Digital':{
+            'nome': "m1_entrega_certificado_curso_c4",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "2338332203320440"
+        },
+        'Entrega - Certificado Digital Congresso': {
+            'nome': "m1_entrega_certificado_congresso_c4",
+            'connectionId': 'ouLDZiM3pEddrZuTGJVw',
+            'wabaId': '551316877339100',
+            'userId': '3jNt3SinWzW08N7iqGhu473b7M53',
+            'id': "2003930783851763"
         }
     },
 }
