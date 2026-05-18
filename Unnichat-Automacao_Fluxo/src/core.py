@@ -165,42 +165,80 @@ def aplicar_linguagem_congresso(json_data):
 
 
 def aplicar_template_whatsapp(json_data, dados_template):
+    """
+    Aplica os dados do template oficial do WhatsApp em todos os pontos do JSON.
+
+    Importante: no JSON exportado pelo Unnichat, o template aparece em mais de
+    um lugar:
+      1. dentro de message.template;
+      2. no templateId da mensagem;
+      3. em alguns blocos, também existe um template "irmão" do message.
+
+    Antes a troca acontecia só dentro de message.template. Por isso, ao importar
+    no Unnichat, a tela ainda podia mostrar o template antigo no seletor.
+    """
     if not dados_template:
         return json_data
 
     # Estrutura de cadastro manual:
     # se algum campo ainda estiver em branco ou com "COLE_AQUI",
     # a automação não força a troca do template no JSON.
-    # Assim você pode deixar a estrutura pronta e preencher depois sem quebrar a geração.
     campos_obrigatorios = ["nome", "connectionId", "wabaId", "userId", "id"]
     for campo in campos_obrigatorios:
         valor = str(dados_template.get(campo, "")).strip()
         if not valor or "COLE_AQUI" in valor:
             return json_data
 
+    def atualizar_template_obj(template_obj):
+        """Atualiza o objeto interno de template sem apagar componentes/botões."""
+        if not isinstance(template_obj, dict):
+            return
+
+        template_obj["name"] = dados_template["nome"]
+        template_obj["id"] = dados_template["id"]
+        template_obj["connectionId"] = dados_template["connectionId"]
+        template_obj["wabaId"] = dados_template["wabaId"]
+        template_obj["userId"] = dados_template["userId"]
+
+        # Mantém o padrão mais seguro para template já aprovado.
+        if dados_template.get("status"):
+            template_obj["status"] = dados_template["status"]
+        elif template_obj.get("status"):
+            template_obj["status"] = "APPROVED"
+
+        if dados_template.get("category"):
+            template_obj["category"] = dados_template["category"]
+
+        if dados_template.get("language"):
+            template_obj["language"] = dados_template["language"]
+
+    def atualizar_mensagem_template(msg_obj):
+        """Atualiza o bloco message quando ele é de envio de template."""
+        if not isinstance(msg_obj, dict):
+            return
+
+        msg_obj["templateId"] = dados_template["id"]
+        atualizar_template_obj(msg_obj.get("template"))
+
+        # Algumas exportações guardam o template serializado em string.
+        if "templateDataJson" in msg_obj:
+            try:
+                template_json = json.loads(msg_obj["templateDataJson"])
+                atualizar_template_obj(template_json)
+                msg_obj["templateDataJson"] = json.dumps(template_json, ensure_ascii=False)
+            except Exception:
+                pass
+
     def percorrer(obj):
         if isinstance(obj, dict):
+            # Caso 1: estamos no nó inteiro; atualiza message e o template irmão.
+            if isinstance(obj.get("message"), dict) and obj["message"].get("type") == "send_template":
+                atualizar_mensagem_template(obj["message"])
+                atualizar_template_obj(obj.get("template"))
+
+            # Caso 2: estamos diretamente dentro do objeto message.
             if obj.get("type") == "send_template" or "templateDataJson" in obj:
-                obj["templateId"] = dados_template["id"]
-
-                if "template" in obj and isinstance(obj["template"], dict):
-                    obj["template"]["name"] = dados_template["nome"]
-                    obj["template"]["connectionId"] = dados_template["connectionId"]
-                    obj["template"]["wabaId"] = dados_template["wabaId"]
-                    obj["template"]["userId"] = dados_template["userId"]
-                    obj["template"]["id"] = dados_template["id"]
-
-                if "templateDataJson" in obj:
-                    try:
-                        template_json = json.loads(obj["templateDataJson"])
-                        template_json["name"] = dados_template["nome"]
-                        template_json["id"] = dados_template["id"]
-                        template_json["connectionId"] = dados_template["connectionId"]
-                        template_json["wabaId"] = dados_template["wabaId"]
-                        template_json["userId"] = dados_template["userId"]
-                        obj["templateDataJson"] = json.dumps(template_json, ensure_ascii=False)
-                    except Exception:
-                        pass
+                atualizar_mensagem_template(obj)
 
             for valor in obj.values():
                 percorrer(valor)
@@ -614,8 +652,6 @@ TEMPLATES_WHATSAPP = {
         }
     },
 }
-
-
 
 def processar_curso(
     linha,
