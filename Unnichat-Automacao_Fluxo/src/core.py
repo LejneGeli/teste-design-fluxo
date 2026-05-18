@@ -36,25 +36,22 @@ def calcular_data_especifica(data_str, dias_adicionais):
     except:
         return data_str
 
-def calcular_dt_final_semana(data_str):
+def calcular_timestamp_dt_final_semana(data_str):
     """
-    Calcula o último dia em que as aulas ficam disponíveis para o aluno.
+    Calcula o timestamp de corte das aulas.
 
-    Regra:
-      - o curso começa na segunda-feira;
-      - as aulas acontecem de segunda a sexta;
-      - o aluno pode assistir novamente até a terça-feira da semana seguinte.
+    Regra: o curso começa na segunda e as aulas ficam disponíveis até
+    a terça-feira da semana seguinte. Como a automação precisa bloquear
+    a partir da quarta-feira, usamos D+9 às 00:00.
 
-    Exemplo:
-      22/06/2026 (segunda) -> 30/06/2026 (terça)
+    Exemplo: início em 22/06 -> corte em 01/07 00:00.
     """
     try:
-        data_completa = f"{data_str}/2026"
-        dt_inicio = datetime.strptime(data_completa, "%d/%m/%Y")
-        dt_final = dt_inicio + timedelta(days=8)
-        return dt_final.strftime("%d/%m")
-    except:
-        return data_str
+        data_corte = calcular_data_especifica(data_str, 9)
+        return gerar_timestamp(data_corte, "00:00", 0)
+    except Exception:
+        return 0
+
 
 def limpar_para_json(texto):
     """Remove caracteres que quebram a estrutura do arquivo JSON."""
@@ -670,7 +667,8 @@ def processar_curso(
     data_extenso = extenso_mes(data_ancora)
     data_prazo_cert = calcular_data_especifica(data_ancora, 2)
     data_aulas_ate  = calcular_data_especifica(data_ancora, 8)
-    dt_final_semana = calcular_dt_final_semana(data_ancora)
+    dt_final_semana = calcular_timestamp_dt_final_semana(data_ancora)
+    dt_final_semana_format = calcular_data_especifica(data_ancora, 9)
 
     def fix_link_padrao(utm):
         return link_hotmart_raw.replace("XXXXXXXXXXXXXXXXX", utm) if link_hotmart_raw else ""
@@ -710,8 +708,9 @@ def processar_curso(
         "{{DT_INICIO_CURSO_EXT}}":          data_extenso,
         "{{DT_INICIO_CURSO_FORMAT}}":       data_ancora,
         "{{DT_AULAS_DISP_CURSO_FORMAT}}":   data_aulas_ate,
-        "{{dt_final_semana}}":              dt_final_semana,
-        "{{DT_FINAL_SEMANA}}":              dt_final_semana,
+        "{{dt_final_semana}}":              str(dt_final_semana),
+        "{{DT_FINAL_SEMANA}}":              str(dt_final_semana),
+        "{{DT_FINAL_SEMANA_FORMAT}}":       dt_final_semana_format,
         "{{DT_FIM_CERT_FORMAT}}":           data_prazo_cert,
         "{{LINK_CERTIFICADO_IMG}}":         link_cert_img,
         "{{TAG_INIC_F_CURSO}}":             tag_atrasados_f1,
