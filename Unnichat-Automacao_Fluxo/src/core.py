@@ -36,6 +36,26 @@ def calcular_data_especifica(data_str, dias_adicionais):
     except:
         return data_str
 
+def calcular_dt_final_semana(data_str):
+    """
+    Calcula o último dia em que as aulas ficam disponíveis para o aluno.
+
+    Regra:
+      - o curso começa na segunda-feira;
+      - as aulas acontecem de segunda a sexta;
+      - o aluno pode assistir novamente até a terça-feira da semana seguinte.
+
+    Exemplo:
+      22/06/2026 (segunda) -> 30/06/2026 (terça)
+    """
+    try:
+        data_completa = f"{data_str}/2026"
+        dt_inicio = datetime.strptime(data_completa, "%d/%m/%Y")
+        dt_final = dt_inicio + timedelta(days=8)
+        return dt_final.strftime("%d/%m")
+    except:
+        return data_str
+
 def limpar_para_json(texto):
     """Remove caracteres que quebram a estrutura do arquivo JSON."""
     if not texto: return ""
@@ -650,6 +670,7 @@ def processar_curso(
     data_extenso = extenso_mes(data_ancora)
     data_prazo_cert = calcular_data_especifica(data_ancora, 2)
     data_aulas_ate  = calcular_data_especifica(data_ancora, 8)
+    dt_final_semana = calcular_dt_final_semana(data_ancora)
 
     def fix_link_padrao(utm):
         return link_hotmart_raw.replace("XXXXXXXXXXXXXXXXX", utm) if link_hotmart_raw else ""
@@ -689,6 +710,8 @@ def processar_curso(
         "{{DT_INICIO_CURSO_EXT}}":          data_extenso,
         "{{DT_INICIO_CURSO_FORMAT}}":       data_ancora,
         "{{DT_AULAS_DISP_CURSO_FORMAT}}":   data_aulas_ate,
+        "{{dt_final_semana}}":              dt_final_semana,
+        "{{DT_FINAL_SEMANA}}":              dt_final_semana,
         "{{DT_FIM_CERT_FORMAT}}":           data_prazo_cert,
         "{{LINK_CERTIFICADO_IMG}}":         link_cert_img,
         "{{TAG_INIC_F_CURSO}}":             tag_atrasados_f1,

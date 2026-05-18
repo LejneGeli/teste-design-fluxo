@@ -481,7 +481,7 @@
                   "commercialTimeCheckCondtional": "more-than",
                   "commercialTimeType": "date",
                   "commercialDate": {
-                    "seconds": 1779850800,
+                    "seconds": {{dt_final_semana}},
                     "nanoseconds": 0
                   },
                   "type": "commercial-time",
