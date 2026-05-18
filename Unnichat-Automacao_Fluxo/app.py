@@ -383,6 +383,7 @@ TEMPLATES = {
     "13": {"nome": "SC3",           "path": template_path("esqueleto_fluxo_sc3.json"),      "subpasta": "Fluxo_SC3"},
     "18": {"nome": "Retroativo",    "path": template_path("esqueleto_fluxo_sc3.json"),      "subpasta": "Fluxo_Retroativo"},
     "16": {"nome": "RETOMADA",      "path": template_path("esqueleto_retomada.json"),       "subpasta": "Fluxo_Retomada"},
+    "20": {"nome": "Entrega - Certificado Digital", "path": template_path("esqueleto_entrega_certificado_digital.json"), "subpasta": "Fluxo_Entrega_Certificado_Digital"},
     "14": {"nome": "Docs",          "path": template_path("esqueleto_docs.json"),           "subpasta": "Fluxo_Docs"}
 }
 
@@ -395,14 +396,14 @@ with st.container():
     with col1:
         fluxo_label = st.selectbox(
             "Selecione o Fluxo:", 
-            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Docs (Em breve) 🔒", "GERAR TODOS"],
+            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Entrega - Certificado Digital", "Docs (Em breve) 🔒", "GERAR TODOS"],
             index=None,
             placeholder="Escolha uma opção"
         )
         map_labels = {
             "Inscrição":"1", "Pré-Inscrição":"2", "F1":"3", "F2":"4", "F2.1":"15", "F3":"5", 
             "F4":"6", "F5":"7", "F5.1":"17", "F6":"8", "F7":"9", "SC0":"19", "SC1":"11", "SC2":"12", 
-            "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
+            "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Entrega - Certificado Digital":"20", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
         }
         id_fluxo = map_labels.get(fluxo_label)
 

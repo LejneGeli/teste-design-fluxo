@@ -1,0 +1,1176 @@
+{
+  "name": "{{NOME_CURSO}} - Entrega - Certificado Digital",
+  "category": "automation",
+  "status": "idle",
+  "connectionType": "whatsapp",
+  "folderId": "gqbtJN8UOVj1O5scop4h",
+  "node": {
+    "pos": "{\"x\":-971.0470190375308,\"y\":-678.5672739491883}",
+    "triggers": [
+      {
+        "postSegment": "all",
+        "interaction": "add-tag",
+        "caseSentive": false,
+        "tag": "{{TAG_CERT_CURSO}}",
+        "instagramSegment": "all"
+      }
+    ],
+    "type": {
+      "id": "nTwOK2hrsVpfOEBPruqV",
+      "tag": "init",
+      "color": "transparent",
+      "icon": "init"
+    },
+    "lastEditedBy": "carolinelejnecess7@gmail.com",
+    "sonId": "V5erBY0DfXcxqRswXpWd",
+    "id": "EPWBWpxkQgkfBUkdx69T",
+    "nodes": [
+      {
+        "message": {
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏",
+          "links": [
+            {
+              "campaignId": "aTI1PygQ4RMRFAMAYrI2",
+              "sonId": "ayOQ9km8nuFXC0cwvqWF",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            }
+          ],
+          "messageType": "message-text",
+          "type": "send_message"
+        },
+        "sonId": "UQulTEFYrTEdiaDZ8Pof",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "3RTtyW8oAZ6BH8zrEvt8",
+        "pos": "{\"x\":1848.998506050993,\"y\":1745.5677835934418}",
+        "type": {
+          "tag": "message",
+          "icon": "",
+          "color": "transparent",
+          "id": "message"
+        }
+      },
+      {
+        "pos": "{\"x\":789.4901586051035,\"y\":739.1697914989736}",
+        "type": {
+          "color": "transparent",
+          "tag": "delay",
+          "icon": "",
+          "id": "delay"
+        },
+        "delay": {
+          "sendMessagesIntervalRangeType": "minutes",
+          "type": "seconds",
+          "isComercialInterval": false,
+          "time": 1,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ]
+        },
+        "id": "67LVLYrZCr4qg3YJTMgV",
+        "lastEditedBy": "karloscess7@gmail.com"
+      },
+      {
+        "id": "9qmfGHbmttG9NCbAU870",
+        "pos": "{\"x\":862.6814507465353,\"y\":1075.0126932539456}",
+        "type": {
+          "icon": "",
+          "color": "transparent",
+          "tag": "message",
+          "id": "message"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "sonId": "y8Eea6vKnfvwyD2ldZfO",
+        "message": {
+          "messageType": "message-text",
+          "type": "send_message",
+          "links": [
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "tanSmiUpZx6ZKT7dWTaI"
+            },
+            {
+              "campaignId": "lTdubGEnPOxiTDknSuzt",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "HQIt28wfTDd8gkc0zW9w",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "zcEosxo4GkGoR2c1qp8D",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "rX18iU7QDvA7d1LBtdZT",
+              "sonId": "vXaXnQnxXdjIODKhXgLb"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "PlRLCZpjqb9Imxp7qnHj",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "fJB8NzZ6gOsrcm63KaUh",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br{{CD_CURSO_AULAS}}",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "PejN3B0fLzecjoeFo654"
+            },
+            {
+              "campaignId": "syDSWOjSpUaR21hBXz8M",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "ytG2guNOhlYvio1WvRsc",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "IVtgozqt2MhEYeJpM53O",
+              "sonId": "vXaXnQnxXdjIODKhXgLb"
+            },
+            {
+              "url": "https://cessetembro.com.br/a{{CD_CURSO_AULAS}}",
+              "campaignId": "5IJSG3IysYGE5NYS2AGt",
+              "sonId": "vXaXnQnxXdjIODKhXgLb"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "g7LYaurlvCHOlosikwYO",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "bhq1Hkt3SxQWsB1pQqgo",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "campaignId": "GvyE4PO7FFBSR4RmPrsb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "26Tfz9x2ymnOo2llcxl5",
+              "sonId": "vXaXnQnxXdjIODKhXgLb",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            }
+          ],
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+        }
+      },
+      {
+        "pos": "{\"x\":1164.9253087269965,\"y\":-18.68319377019054}",
+        "type": {
+          "tag": "message",
+          "icon": "",
+          "color": "transparent",
+          "id": "message"
+        },
+        "id": "A8iRJCGmg4VhQwQyZasn",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "message": {
+          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de Auriculoterapia, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
+          "type": "send_message",
+          "messageType": "interactive-message",
+          "interactiveType": "reply-button",
+          "buttons": [
+            {
+              "type": "reply",
+              "reply": {
+                "id": "weOsza9bM8v01bzlTQV0",
+                "title": "Ver detalhes"
+              },
+              "sonId": "mCyBty00FTxZEvXWolXx"
+            }
+          ]
+        }
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "message": {
+          "templateButtons": [
+            {
+              "type": "QUICK_REPLY",
+              "id": "G0WvhE71sTswBpydTbOY",
+              "text": "Ver detalhes",
+              "sonId": "9qmfGHbmttG9NCbAU870"
+            },
+            {
+              "text": "Bloquear envios",
+              "id": "PrbmrxenJx528YenEOI0",
+              "sonId": "Kn6SwKtmD3sLGuTh4E6W",
+              "type": "QUICK_REPLY"
+            }
+          ],
+          "templateId": "26665063039745097",
+          "template": {
+            "name": "detalhes_de_acesso_copy",
+            "status": "DRAFT",
+            "category": "UTILITY",
+            "id": "26665063039745097",
+            "language": "pt_BR",
+            "warning": false,
+            "components": [
+              {
+                "text": "Olá! Seu acesso já está liberado:\n{{1}}\n\nPara ver os detalhes de como acessar, toque no botão abaixo.👇",
+                "type": "BODY",
+                "example": {
+                  "body_text": [
+                    "Apostila de {{NOME_CURSO}}"
+                  ]
+                }
+              },
+              {
+                "type": "FOOTER",
+                "text": "Centro Educacional Sete de Setembro"
+              },
+              {
+                "type": "BUTTONS",
+                "buttons": [
+                  {
+                    "text": "Ver detalhes",
+                    "id": "IED6gwBApoi4OLk5A2u9",
+                    "type": "QUICK_REPLY"
+                  },
+                  {
+                    "id": "WhLWfaODVSUjZY11MCEf",
+                    "text": "Bloquear envios",
+                    "type": "QUICK_REPLY"
+                  }
+                ]
+              }
+            ]
+          },
+          "bodyParameters": [
+            {
+              "type": "text",
+              "text": "Certificado de {{NOME_CURSO}}"
+            }
+          ],
+          "type": "send_template"
+        },
+        "id": "Bk8GDHtS7r37NPGDnY6V",
+        "pos": "{\"x\":471.2602788209206,\"y\":1076.2226395388989}",
+        "type": {
+          "id": "message",
+          "icon": "",
+          "color": "transparent",
+          "tag": "message"
+        }
+      },
+      {
+        "sonId": "NPKYj2nrkCK5qo7nMJuX",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "action": {
+          "type": "add_tag",
+          "forceAttribution": false,
+          "keepChatActive": false,
+          "userResourceGroupSendRandomic": false,
+          "unniiaAtributionOnly": false,
+          "tags": [
+            "Bloquear Envios"
+          ]
+        },
+        "id": "Kn6SwKtmD3sLGuTh4E6W",
+        "pos": "{\"x\":859.3845198060458,\"y\":1760.0801266358499}",
+        "type": {
+          "tag": "action",
+          "icon": "",
+          "color": "transparent",
+          "id": "action"
+        }
+      },
+      {
+        "sonId": "iWPV1Uu4zbhsDU70QS0E",
+        "message": {
+          "messageType": "message-text",
+          "type": "send_message",
+          "links": [
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "XH5Ns9hUy0bmGFC9BnPu",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp"
+            },
+            {
+              "campaignId": "m7qKSNUhExzOeFfNR0xD",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "L2fO9HTSgrCXnBDgPTa4"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "z2Qnzt4Ydg9FAgY9vnv0",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "m8H0KguyULucq62r6hAq",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp"
+            },
+            {
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "ppYJvqR5VOoCVdPk2REZ",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "K95UUzCS6JIqW7jH1tem",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "2kZqkAKMbfYiSqYMQaG5"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "C3oKkvdoi55zg9DWg8st",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "3T2qSNtuLcIfTEceDt2l"
+            },
+            {
+              "campaignId": "SNCdjWrHRUO1m7W1XURI",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "3eQ2cfBO82gnwuJQpNjQ",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "ysbSsKHuFgeGvVX2h0gl"
+            },
+            {
+              "campaignId": "RqSJPEy1kExNt5AzH5v8",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "Jda97oUvJjbKtpxW0yv9",
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "yXSEQ47tLw8pyR2JMGDp",
+              "campaignId": "FTHfrAEiSna9JmEowwk3",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            }
+          ],
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e está disponível para você.\n\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+        },
+        "lastEditedBy": "cessetembro@gmail.com",
+        "id": "MLkuWpDFZxIx9XOqf8O2",
+        "type": {
+          "id": "message",
+          "icon": "",
+          "color": "transparent",
+          "tag": "message"
+        },
+        "pos": "{\"x\":815.6915640742011,\"y\":-709.1303995459774}"
+      },
+      {
+        "message": {
+          "messageType": "interactive-message",
+          "type": "send_message",
+          "buttonsBodyText": "Sem problemas! 😊  \nEntramos em contato porque este número realizou a compra do certificado de Auriculoterapia, e por isso enviamos apenas as informações relacionadas a ele.\n\nComo você pediu, não enviaremos mais mensagens por aqui.\n\nDe qualquer forma, vou deixar um botão abaixo. Caso precise acessar as informações do certificado no futuro, é só clicar 👇",
+          "interactiveType": "reply-button",
+          "buttons": [
+            {
+              "sonId": "uCNKbEAYucpoGHCepC7q",
+              "type": "reply",
+              "reply": {
+                "id": "FGCZgkxsHWwXqe0KmIfo",
+                "title": "Ver detalhes"
+              }
+            }
+          ]
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "NPKYj2nrkCK5qo7nMJuX",
+        "type": {
+          "color": "transparent",
+          "icon": "",
+          "tag": "message",
+          "id": "message"
+        },
+        "pos": "{\"x\":1211.9151953993307,\"y\":1765.4598990297325}"
+      },
+      {
+        "id": "QnynMyVSzovitA5Vtpba",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "type": {
+          "color": "transparent",
+          "icon": "",
+          "tag": "delay",
+          "id": "delay"
+        },
+        "delay": {
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "type": "seconds",
+          "commercialTimeRangeMinutes": false,
+          "time": 1,
+          "isComercialInterval": false,
+          "sendMessagesIntervalRangeType": "minutes"
+        },
+        "pos": "{\"x\":787.2823988524965,\"y\":441.0621516320657}"
+      },
+      {
+        "id": "UQulTEFYrTEdiaDZ8Pof",
+        "type": {
+          "icon": "",
+          "color": "transparent",
+          "tag": "delay",
+          "id": "delay"
+        },
+        "delay": {
+          "sendMessagesIntervalRangeType": "minutes",
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "time": 1,
+          "isComercialInterval": false,
+          "type": "seconds"
+        },
+        "pos": "{\"x\":2164.3367643799775,\"y\":2063.4680134475416}",
+        "lastEditedBy": "karloscess7@gmail.com"
+      },
+      {
+        "pos": "{\"x\":-615.5011608433936,\"y\":-682.4475560156744}",
+        "type": {
+          "color": "transparent",
+          "tag": "conditionalV2",
+          "icon": "",
+          "id": "conditionalV2"
+        },
+        "conditionalV2": {
+          "falseId": "k2Hu35bGvrwGfn8jFC5w",
+          "groupConditions": [
+            {
+              "name": "Grupo de condições",
+              "sonId": "bm0TFIhhxOsmk0BT64uk",
+              "conditionType": "or",
+              "conditions": [
+                {
+                  "commercialTimeRangeMinutes": true,
+                  "commercialTimeCheckCondtional": "more-than",
+                  "commercialTimeType": "date",
+                  "commercialDate": {
+                    "seconds": 1779850800,
+                    "nanoseconds": 0
+                  },
+                  "type": "commercial-time",
+                  "tags": []
+                }
+              ]
+            }
+          ]
+        },
+        "lastEditedBy": "cessetembro@gmail.com",
+        "id": "V5erBY0DfXcxqRswXpWd"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "message": {
+          "bodyParameters": [
+            {
+              "type": "text",
+              "text": "Certificado de {{NOME_CURSO}}"
+            }
+          ],
+          "type": "send_template",
+          "templateButtons": [
+            {
+              "sonId": "MLkuWpDFZxIx9XOqf8O2",
+              "text": "Ver detalhes",
+              "id": "Bj8JWVLJa7toNVUArObJ",
+              "type": "QUICK_REPLY"
+            },
+            {
+              "type": "QUICK_REPLY",
+              "sonId": "gSjqdJkTaUMVLyUE2iyV",
+              "id": "2Ca3VpFuDWERDeOfgfKC",
+              "text": "Bloquear envios"
+            }
+          ],
+          "templateId": "26665063039745097",
+          "template": {
+            "name": "detalhes_de_acesso_copy",
+            "category": "UTILITY",
+            "status": "DRAFT",
+            "id": "26665063039745097",
+            "language": "pt_BR",
+            "warning": false,
+            "components": [
+              {
+                "example": {
+                  "body_text": [
+                    "Apostila de {{NOME_CURSO}}"
+                  ]
+                },
+                "type": "BODY",
+                "text": "Olá! Seu acesso já está liberado:\n{{1}}\n\nPara ver os detalhes de como acessar, toque no botão abaixo.👇"
+              },
+              {
+                "type": "FOOTER",
+                "text": "Centro Educacional Sete de Setembro"
+              },
+              {
+                "type": "BUTTONS",
+                "buttons": [
+                  {
+                    "type": "QUICK_REPLY",
+                    "text": "Ver detalhes",
+                    "id": "Bj8JWVLJa7toNVUArObJ"
+                  },
+                  {
+                    "type": "QUICK_REPLY",
+                    "id": "2Ca3VpFuDWERDeOfgfKC",
+                    "text": "Bloquear envios"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "type": {
+          "id": "message",
+          "icon": "",
+          "color": "transparent",
+          "tag": "message"
+        },
+        "pos": "{\"x\":424.2703921485863,\"y\":-707.9204532610241}",
+        "template": {
+          "status": "APPROVED",
+          "logs": [
+            {
+              "level": 1,
+              "msg": "start processing",
+              "time": 1771785297002
+            },
+            {
+              "level": 1,
+              "msg": "get user",
+              "time": 1771785297002
+            },
+            {
+              "time": 1771785297002,
+              "msg": "email cessetembro@gmail.com",
+              "level": 1
+            },
+            {
+              "level": 1,
+              "msg": "get connection",
+              "time": 1771785297002
+            },
+            {
+              "level": 1,
+              "time": 1771785297015,
+              "msg": "create template"
+            },
+            {
+              "msg": "get template",
+              "time": 1771785312338,
+              "level": 1
+            },
+            {
+              "msg": "end processing",
+              "time": 1771785312583,
+              "level": 1
+            }
+          ],
+          "createdAt": {
+            "seconds": 1771785312,
+            "nanoseconds": 583000000
+          },
+          "category": "UTILITY",
+          "id": "26665063039745097",
+          "language": "pt_BR",
+          "startedAt": {
+            "seconds": 1771785297,
+            "nanoseconds": 2000000
+          },
+          "userId": "3jNt3SinWzW08N7iqGhu473b7M53",
+          "connectionId": "tOgoXMt8I9a21Pj1BiJx",
+          "name": "detalhes_de_acesso_copy",
+          "updatedAt": {
+            "seconds": 1777604293,
+            "nanoseconds": 583000000
+          },
+          "finishedAt": {
+            "seconds": 1771785312,
+            "nanoseconds": 583000000
+          },
+          "warning": false,
+          "components": [
+            {
+              "example": {
+                "body_text": [
+                  "Apostila de {{NOME_CURSO}}"
+                ]
+              },
+              "type": "BODY",
+              "text": "Olá! Seu acesso já está liberado:\n{{1}}\n\nPara ver os detalhes de como acessar, toque no botão abaixo.👇"
+            },
+            {
+              "type": "FOOTER",
+              "text": "Centro Educacional Sete de Setembro"
+            },
+            {
+              "type": "BUTTONS",
+              "buttons": [
+                {
+                  "type": "QUICK_REPLY",
+                  "text": "Ver detalhes"
+                },
+                {
+                  "type": "QUICK_REPLY",
+                  "text": "Bloquear envios"
+                }
+              ]
+            }
+          ],
+          "wabaId": "4237462246578095"
+        },
+        "id": "Z2yeiMdqu0GoM9C3Fryp"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "ayOQ9km8nuFXC0cwvqWF",
+        "pos": "{\"x\":2167.288988847891,\"y\":1746.03855252831}",
+        "type": {
+          "id": "delay",
+          "icon": "",
+          "color": "transparent",
+          "tag": "delay"
+        },
+        "delay": {
+          "sendMessagesIntervalRangeType": "minutes",
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "time": 1,
+          "isComercialInterval": false,
+          "type": "seconds"
+        }
+      },
+      {
+        "conditionalV2": {
+          "falseId": "Z2yeiMdqu0GoM9C3Fryp",
+          "groupConditions": [
+            {
+              "conditions": [
+                {
+                  "tags": [],
+                  "type": "conversation-window"
+                }
+              ],
+              "sonId": "qVQQcaFKF0MPiuiLvmqp",
+              "conditionType": "or"
+            }
+          ]
+        },
+        "lastEditedBy": "karloscess7@gmail.com",
+        "type": {
+          "color": "transparent",
+          "tag": "conditionalV2",
+          "icon": "",
+          "id": "conditionalV2"
+        },
+        "pos": "{\"x\":35.751934009481374,\"y\":-1390.3393125442594}",
+        "id": "bm0TFIhhxOsmk0BT64uk"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "sonId": "A8iRJCGmg4VhQwQyZasn",
+        "action": {
+          "unniiaAtributionOnly": false,
+          "userResourceGroupSendRandomic": false,
+          "type": "add_tag",
+          "keepChatActive": false,
+          "forceAttribution": false,
+          "tags": [
+            "Bloquear Envios"
+          ]
+        },
+        "id": "gSjqdJkTaUMVLyUE2iyV",
+        "pos": "{\"x\":812.3946331337115,\"y\":-24.062966164073146}",
+        "type": {
+          "id": "action",
+          "tag": "action",
+          "color": "transparent",
+          "icon": ""
+        }
+      },
+      {
+        "id": "hrAR9U0flRPjhE3QtFI9",
+        "type": {
+          "tag": "message",
+          "color": "transparent",
+          "icon": "",
+          "id": "message"
+        },
+        "pos": "{\"x\":1802.0086193786588,\"y\":-38.575309206481165}",
+        "sonId": "yKc2ncoIreXcrG1W42Iw",
+        "message": {
+          "type": "send_message",
+          "messageType": "message-text",
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e está disponível para você.\n\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏",
+          "links": [
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "Y3yoYEZvS9EIdVOAExXa",
+              "sonId": "1iAeq6KsgSzSjXq9TcIK"
+            }
+          ]
+        },
+        "lastEditedBy": "cessetembro@gmail.com"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "iWPV1Uu4zbhsDU70QS0E",
+        "delay": {
+          "type": "seconds",
+          "isComercialInterval": false,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "time": 1,
+          "sendMessagesIntervalRangeType": "minutes"
+        },
+        "type": {
+          "id": "delay",
+          "icon": "",
+          "tag": "delay",
+          "color": "transparent"
+        },
+        "pos": "{\"x\":1150.9776330007842,\"y\":-390.1853257577367}"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "conditionalV2": {
+          "groupConditions": [
+            {
+              "conditions": [
+                {
+                  "type": "conversation-window",
+                  "tags": []
+                }
+              ],
+              "conditionType": "or",
+              "sonId": "yxGan1kwJXWyIU1EViJQ"
+            }
+          ],
+          "falseId": "Bk8GDHtS7r37NPGDnY6V"
+        },
+        "id": "k2Hu35bGvrwGfn8jFC5w",
+        "type": {
+          "id": "conditionalV2",
+          "tag": "conditionalV2",
+          "icon": "",
+          "color": "transparent"
+        },
+        "pos": "{\"x\":82.74182068181562,\"y\":393.80378025566347}"
+      },
+      {
+        "action": {
+          "unniiaAtributionOnly": false,
+          "userResourceGroupSendRandomic": false,
+          "forceAttribution": false,
+          "keepChatActive": false,
+          "type": "remove_tag",
+          "tags": [
+            "Bloquear Envios"
+          ]
+        },
+        "sonId": "hrAR9U0flRPjhE3QtFI9",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "type": {
+          "id": "action",
+          "tag": "action",
+          "icon": "",
+          "color": "transparent"
+        },
+        "pos": "{\"x\":1481.6803647547513,\"y\":-37.4612314318814}",
+        "id": "mCyBty00FTxZEvXWolXx"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "nD6hBDLhVOvVDQEqx0iy",
+        "type": {
+          "id": "delay",
+          "tag": "delay",
+          "icon": "",
+          "color": "transparent"
+        },
+        "delay": {
+          "sendMessagesIntervalRangeType": "minutes",
+          "time": 1,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "isComercialInterval": false,
+          "type": "seconds"
+        },
+        "pos": "{\"x\":742.5002719327692,\"y\":-1044.9733013009495}"
+      },
+      {
+        "pos": "{\"x\":423.8896885024217,\"y\":-1391.2171621308712}",
+        "type": {
+          "id": "message",
+          "tag": "message",
+          "icon": "",
+          "color": "transparent"
+        },
+        "id": "qVQQcaFKF0MPiuiLvmqp",
+        "sonId": "nD6hBDLhVOvVDQEqx0iy",
+        "lastEditedBy": "cessetembro@gmail.com",
+        "message": {
+          "messageType": "message-text",
+          "type": "send_message",
+          "links": [
+            {
+              "campaignId": "2XOvRAc7a4J9OJoARNw7",
+              "sonId": "nD6hBDLhVOvVDQEqx0iy",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "uIlRXhxqzvafgSDhqJUE",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "cWbgJHgP9TvyU0JQDaFv",
+              "sonId": "oaRwidimQ08b8IXhjsfl"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "MpmwhUDiOcLLmZq2NATN",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "f1cXojoYpVoqJ8yAFLPF"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "DgEtK3m9TffyFbx8lZeG",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "oL1tq4WnZuTGaM6iVlIY"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "LDc4cnkBWmeEcqsk6qAc"
+            },
+            {
+              "campaignId": "1Itsrhc2SgS3s7GAEroE",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "utvcaU2alDfT8u1EYrrw",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "gNGrZMxMlcx9i5w5FyC5",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "oxtegtXbC7VPMiRjBtje",
+              "sonId": "oaRwidimQ08b8IXhjsfl"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "WuMkXZZFJ4S85VMcKKxh",
+              "sonId": "oaRwidimQ08b8IXhjsfl"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "yF54N2wjJDusroKFFx24"
+            },
+            {
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "G3CD5zn131w8sbvEVjMG",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "oaRwidimQ08b8IXhjsfl",
+              "campaignId": "jHYCQ8qhry4Ade461YPH"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "EuzIWVcXEOFK5RBm9fzN",
+              "sonId": "oaRwidimQ08b8IXhjsfl"
+            }
+          ],
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e está disponível para você.\n\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+        }
+      },
+      {
+        "action": {
+          "unniiaAtributionOnly": false,
+          "keepChatActive": false,
+          "forceAttribution": false,
+          "type": "remove_tag",
+          "userResourceGroupSendRandomic": false,
+          "tags": [
+            "Bloquear Envios"
+          ]
+        },
+        "sonId": "3RTtyW8oAZ6BH8zrEvt8",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "type": {
+          "id": "action",
+          "tag": "action",
+          "color": "transparent",
+          "icon": ""
+        },
+        "pos": "{\"x\":1528.6702514270855,\"y\":1746.6818613680416}",
+        "id": "uCNKbEAYucpoGHCepC7q"
+      },
+      {
+        "delay": {
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "type": "seconds",
+          "commercialTimeRangeMinutes": false,
+          "time": 1,
+          "isComercialInterval": false,
+          "sendMessagesIntervalRangeType": "minutes"
+        },
+        "type": {
+          "id": "delay",
+          "color": "transparent",
+          "icon": "",
+          "tag": "delay"
+        },
+        "pos": "{\"x\":1188.6963351546094,\"y\":1076.4442004468747}",
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "vXaXnQnxXdjIODKhXgLb"
+      },
+      {
+        "lastEditedBy": "karloscess7@gmail.com",
+        "pos": "{\"x\":1197.9675196731184,\"y\":1393.9577670421863}",
+        "delay": {
+          "sendMessagesIntervalRangeType": "minutes",
+          "type": "seconds",
+          "time": 1,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "isComercialInterval": false
+        },
+        "type": {
+          "id": "delay",
+          "icon": "",
+          "color": "transparent",
+          "tag": "delay"
+        },
+        "id": "y8Eea6vKnfvwyD2ldZfO"
+      },
+      {
+        "pos": "{\"x\":2117.346877707643,\"y\":279.32492064761857}",
+        "delay": {
+          "type": "seconds",
+          "isComercialInterval": false,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "time": 1,
+          "sendMessagesIntervalRangeType": "minutes"
+        },
+        "type": {
+          "color": "transparent",
+          "tag": "delay",
+          "icon": "",
+          "id": "delay"
+        },
+        "id": "yKc2ncoIreXcrG1W42Iw",
+        "lastEditedBy": "karloscess7@gmail.com"
+      },
+      {
+        "pos": "{\"x\":1141.7064484822752,\"y\":-707.6988923530483}",
+        "type": {
+          "icon": "",
+          "tag": "delay",
+          "color": "transparent",
+          "id": "delay"
+        },
+        "delay": {
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "sendMessagesIntervalRangeType": "minutes",
+          "type": "seconds",
+          "time": 1,
+          "commercialTimeRangeMinutes": false,
+          "isComercialInterval": false
+        },
+        "id": "yXSEQ47tLw8pyR2JMGDp",
+        "lastEditedBy": "karloscess7@gmail.com"
+      },
+      {
+        "id": "yxGan1kwJXWyIU1EViJQ",
+        "type": {
+          "tag": "message",
+          "color": "transparent",
+          "icon": "",
+          "id": "message"
+        },
+        "pos": "{\"x\":470.8795751747559,\"y\":392.925930669052}",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "message": {
+          "type": "send_message",
+          "messageType": "message-text",
+          "links": [
+            {
+              "campaignId": "FbCLl3U9cA7yqfEMMCfA",
+              "sonId": "67LVLYrZCr4qg3YJTMgV",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "XFBqBdRiEGfPUnLV10hl",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "campaignId": "mNitJmh0zmD7Qtmjcx20",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "VkGMYQQsx0ZBlbprKj2M"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "aeQUETvd3UbpxffYb2D0",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "vxUuRiHshcMfqZhjTXty",
+              "sonId": "QnynMyVSzovitA5Vtpba"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "0T4BY5fm0Zmj0P50MlCK",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "X0Qn6MSHzk3woXJJBEcD",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "6U93APGl7d9opubdopsG"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "TvVRi1czW17CC1BW5U6I",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "7cYGAQp2NeqXjFMgYrCG"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "coTMUaiG4oSnHzyCnibw",
+              "sonId": "QnynMyVSzovitA5Vtpba"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "m2yNB8qvzEFGIxHEEOD0"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "OIzYZTx9GmxkfHScAGGy"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "0NfdhoSGMSWqYBmbRdB6",
+              "sonId": "QnynMyVSzovitA5Vtpba"
+            },
+            {
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}",
+              "campaignId": "appBCG9nl4boWcK7yCz7",
+              "sonId": "QnynMyVSzovitA5Vtpba"
+            },
+            {
+              "sonId": "QnynMyVSzovitA5Vtpba",
+              "campaignId": "ptAvzvq1TcmybrevEaWG",
+              "url": "https://cessetembro.com.br/{{CD_CURSO_AULAS}}"
+            }
+          ],
+          "message": "Acesso liberado!\n\nOlá, {{Nome do Aluno(a)}}! 🎓\nSeu certificado já foi confirmado e as aulas do curso estão disponíveis para você.\n\n👉 Acesse suas aulas aqui: https://cessetembro.com.br/aulas72auriculoterapia\n👉 Baixe seu certificado aqui: https://www.setecertificados.com.br/resultado/{{CPF}}\n\nQualquer dúvida é só nos chamar. Bom curso e parabéns pela sua conquista! 👏"
+        },
+        "sonId": "67LVLYrZCr4qg3YJTMgV"
+      }
+    ]
+  },
+  "customFieldsToCreate": {
+    "3RTtyW8oAZ6BH8zrEvt8": {
+      "customFields": [
+        {
+          "name": "Nome do Aluno(a)"
+        },
+        {
+          "name": "CPF"
+        }
+      ],
+      "globalCustomFields": []
+    }
+  }
+}
