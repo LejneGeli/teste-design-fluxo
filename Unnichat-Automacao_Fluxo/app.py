@@ -7,6 +7,8 @@ import re
 import os
 import sys
 import base64
+import unicodedata
+from difflib import SequenceMatcher
 from PIL import Image
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
@@ -446,6 +448,113 @@ def identificar_tipo_evento(nome_item):
     return "congresso" if nome[:1].isdigit() else "curso"
 
 
+def normalizar_nome_busca(texto):
+    """
+    Normaliza nomes de cursos para comparação flexível entre abas.
+
+    O objetivo é evitar falhas por acento, caixa alta/baixa, hífen, pontuação
+    ou espaços extras. Ex.: "AUTOCAD - BÁSICO" vira "autocad basico".
+    """
+    texto = str(texto or "").strip().casefold()
+    texto = unicodedata.normalize("NFD", texto)
+    texto = "".join(ch for ch in texto if unicodedata.category(ch) != "Mn")
+    texto = re.sub(r"[^a-z0-9]+", " ", texto)
+    return re.sub(r"\s+", " ", texto).strip()
+
+
+def remover_prefixo_numero_congresso(texto):
+    """
+    Remove número/ordinal no começo do nome para ajudar a localizar congressos
+    quando uma aba está com "1º Congresso..." e outra só com "Congresso...".
+    """
+    texto = str(texto or "").strip()
+    return re.sub(r"^\s*\d+\s*[º°ª]?\s*[-–—.]?\s*", "", texto).strip()
+
+
+def buscar_info_instagram_por_curso(nome_curso, instagram_infos):
+    """
+    Busca o número do fluxo na aba Instagram_Infos sem depender de nome 100% exato.
+
+    Ordem de decisão:
+      1. match exato simples;
+      2. match exato normalizado;
+      3. match exato removendo número inicial de congresso;
+      4. match por prefixo único, priorizando o nome mais específico;
+      5. match aproximado seguro.
+
+    Se houver empate/ambiguidade, retorna aviso para não escolher errado.
+    """
+    if not nome_curso or not instagram_infos:
+        return None, "sem dados"
+
+    # Compatibilidade com o formato antigo: dicionário por chave.
+    info_exata = instagram_infos.get(normalizar_chave(nome_curso))
+    if info_exata:
+        return info_exata, None
+
+    candidatos = [v for k, v in instagram_infos.items() if not str(k).startswith("__") and isinstance(v, dict)]
+    if not candidatos:
+        return None, "sem candidatos"
+
+    alvo_original = str(nome_curso).strip()
+    alvo_norm = normalizar_nome_busca(alvo_original)
+    alvo_sem_num_norm = normalizar_nome_busca(remover_prefixo_numero_congresso(alvo_original))
+
+    def norm_candidato(info):
+        return normalizar_nome_busca(info.get("curso", ""))
+
+    # 1/2. exato normalizado
+    for info in candidatos:
+        if norm_candidato(info) == alvo_norm:
+            return info, None
+
+    # 3. exato sem prefixo numérico/ordinal
+    if alvo_sem_num_norm and alvo_sem_num_norm != alvo_norm:
+        for info in candidatos:
+            if norm_candidato(info) == alvo_sem_num_norm:
+                return info, None
+
+    # 4. prefixo: útil para casos como AUTOCAD x AUTOCAD - BÁSICO AO INTERMEDIÁRIO.
+    prefixos = []
+    for info in candidatos:
+        cand_norm = norm_candidato(info)
+        if not cand_norm:
+            continue
+        if alvo_norm.startswith(cand_norm + " ") or cand_norm.startswith(alvo_norm + " "):
+            prefixos.append((len(cand_norm), info))
+        elif alvo_sem_num_norm and (alvo_sem_num_norm.startswith(cand_norm + " ") or cand_norm.startswith(alvo_sem_num_norm + " ")):
+            prefixos.append((len(cand_norm), info))
+
+    if prefixos:
+        prefixos.sort(key=lambda item: item[0], reverse=True)
+        maior = prefixos[0][0]
+        melhores = [info for tamanho, info in prefixos if tamanho == maior]
+        if len(melhores) == 1:
+            return melhores[0], None
+        nomes = ", ".join(info.get("curso", "") for info in melhores[:5])
+        return None, f"ambíguo entre: {nomes}"
+
+    # 5. aproximação segura. Só aceita se o melhor estiver bem acima do segundo.
+    scores = []
+    for info in candidatos:
+        cand_norm = norm_candidato(info)
+        if not cand_norm:
+            continue
+        score = max(
+            SequenceMatcher(None, alvo_norm, cand_norm).ratio(),
+            SequenceMatcher(None, alvo_sem_num_norm, cand_norm).ratio() if alvo_sem_num_norm else 0,
+        )
+        scores.append((score, info))
+
+    scores.sort(key=lambda item: item[0], reverse=True)
+    if scores and scores[0][0] >= 0.86:
+        segundo = scores[1][0] if len(scores) > 1 else 0
+        if scores[0][0] - segundo >= 0.08:
+            return scores[0][1], None
+
+    return None, "não encontrado com segurança"
+
+
 def buscar_infos_instagram(client, spreadsheet_name="Informações Webhook", worksheet_name="Instagram_Infos"):
     """
     Lê a aba Instagram_Infos e devolve:
@@ -706,9 +815,12 @@ if 'cursos' in st.session_state:
 
                     try:
                         if config.get("tipo") == "instagram":
-                            info_ig = instagram_infos.get(normalizar_chave(nome_curso))
+                            info_ig, motivo_ig = buscar_info_instagram_por_curso(nome_curso, instagram_infos)
                             if not info_ig:
-                                status_visual(f"⚠️ Instagram: curso '{nome_curso}' não encontrado na aba Instagram_Infos.", "warning")
+                                status_visual(
+                                    f"⚠️ Instagram: curso '{nome_curso}' não encontrado na aba Instagram_Infos ({motivo_ig}).",
+                                    "warning"
+                                )
                                 continue
 
                             json_data = processar_instagram(
