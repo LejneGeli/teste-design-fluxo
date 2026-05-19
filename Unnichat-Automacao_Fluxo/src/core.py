@@ -2,17 +2,13 @@ import json
 import os
 from datetime import datetime, timedelta
 
-def extenso_mes(data_str):
-    """Converte '16/02' para '16 de fevereiro'."""
-    meses = {
-        "01": "janeiro", "02": "fevereiro", "03": "março", "04": "abril",
-        "05": "maio", "06": "junho", "07": "julho", "08": "agosto",
-        "09": "setembro", "10": "outubro", "11": "novembro", "12": "dezembro"
-    }
+def calcular_data_especifica(data_str, dias_adicionais):
     try:
         dia, mes = data_str.split("/")
-        nome_mes = meses.get(mes, "")
-        return f"{int(dia)} de {nome_mes}"
+        data_completa = f"{dia}/{mes}/2026"
+        dt_inicio = datetime.strptime(data_completa, "%d/%m/%Y")
+        dt_alvo = dt_inicio + timedelta(days=dias_adicionais)
+        return dt_alvo.strftime("%d/%m/%Y")
     except:
         return data_str
 
