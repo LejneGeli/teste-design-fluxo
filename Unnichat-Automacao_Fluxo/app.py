@@ -682,7 +682,15 @@ if is_retro:
         status_visual(f"💡 Modo retroativo ativo: disparos em {data_disparo_manual} e identidade do fluxo mantida como safra de {data_semana}.", "info")
 
 # --- 2. BUSCA DE DADOS ---
-if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True, disabled=not (fluxo_labels and data_semana)):
+buscar_planilha = st.button(
+    "🔍 Buscar Cursos na Planilha",
+    use_container_width=True,
+    disabled=not (fluxo_labels and data_semana)
+)
+
+if buscar_planilha:
+    st.session_state.etapa = 2
+    
     with st.spinner("Acessando Google Sheets..."):
         client = conectar_planilha("Informações Webhook")
         if client:
@@ -751,7 +759,15 @@ if 'cursos' in st.session_state:
 
     btn_disabled = not bool(ids_fluxos)
 
-    if st.button("🏗️ Gerar Arquivos e Preparar ZIP", use_container_width=True, disabled=btn_disabled):
+    gerar = st.button(
+        "🏗️ Gerar Arquivos e Preparar ZIP",
+        use_container_width=True,
+        disabled=btn_disabled
+    )
+
+    if gerar:
+        st.session_state.etapa = 3
+
         zip_buffer = io.BytesIO()
         arquivos_criados = 0
         mapeamento_contas = st.session_state.get('mapeamento_contas', {})
@@ -873,7 +889,12 @@ if 'cursos' in st.session_state:
 if "zip_gerado" in st.session_state:
     st.divider()
     st.subheader("Download")
-    status_visual(f"✅ Pronto! {st.session_state.get('arquivos_criados', 0)} arquivos estão preparados para baixar.", "success")
+
+    status_visual(
+        f"✅ Pronto! {st.session_state.get('arquivos_criados', 0)} arquivos estão preparados para baixar.",
+        "success"
+    )
+
     st.download_button(
         label="⬇️ Baixar Arquivos (.ZIP)",
         data=st.session_state["zip_gerado"],
