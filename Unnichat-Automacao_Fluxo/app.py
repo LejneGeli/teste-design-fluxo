@@ -405,21 +405,32 @@ def ativar_enter_proximo_botao():
           const now = Date.now();
           if (window.parent.__cessLastEnterClick && now - window.parent.__cessLastEnterClick < 900) return;
 
-          const nextButton =
-            findButtonByText(['baixar']) ||
-            findButtonByText(['gerar', 'zip']) ||
-            findButtonByText(['buscar', 'planilha']);
+          let nextButton = null;
+
+          // Quando o foco está no campo de data, o Enter deve aplicar o valor
+          // e já acionar a busca na planilha. O pequeno atraso ajuda o Streamlit
+          // a sincronizar o texto digitado antes do clique.
+          if (tag === 'input') {
+            nextButton = findButtonByText(['buscar', 'planilha']);
+          }
+
+          if (!nextButton) {
+            nextButton =
+              findButtonByText(['gerar', 'zip']) ||
+              findButtonByText(['baixar']) ||
+              findButtonByText(['buscar', 'planilha']);
+          }
 
           if (nextButton) {
             window.parent.__cessLastEnterClick = now;
             event.preventDefault();
             event.stopPropagation();
-            setTimeout(() => nextButton.click(), 30);
+            setTimeout(() => nextButton.click(), tag === 'input' ? 260 : 40);
           }
         }
 
-        if (!window.parent.__cessEnterShortcutInstalledV2) {
-          window.parent.__cessEnterShortcutInstalledV2 = true;
+        if (!window.parent.__cessEnterShortcutInstalledV3) {
+          window.parent.__cessEnterShortcutInstalledV3 = true;
           doc.addEventListener('keydown', clickNextButton, true);
           window.parent.addEventListener('keydown', clickNextButton, true);
         }
@@ -497,29 +508,52 @@ TEMPLATES = {
 etapa_atual = 3 if "zip_gerado" in st.session_state else (2 if "cursos" in st.session_state else 1)
 render_header(etapa_atual)
 
+
+# Opções exibidas na interface. Agora é multiseleção para permitir gerar
+# combinações específicas sem precisar baixar um fluxo por vez.
+OPCOES_FLUXO = [
+    "GERAR TODOS",
+    "Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7",
+    "SC0", "SC1", "SC2", "SC3",
+    "Retroativo", "RETOMADA", "Entrega - Certificado Digital",
+    "Instagram Comentário", "Instagram Story", "Instagram Comentário + Story",
+    "Docs (Em breve) 🔒",
+]
+
+MAP_LABELS = {
+    "Inscrição":"1", "Pré-Inscrição":"2", "F1":"3", "F2":"4", "F2.1":"15", "F3":"5",
+    "F4":"6", "F5":"7", "F5.1":"17", "F6":"8", "F7":"9", "SC0":"19", "SC1":"11", "SC2":"12",
+    "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Entrega - Certificado Digital":"20",
+    "Instagram Comentário":"21", "Instagram Story":"22", "Instagram Comentário + Story":"23",
+    "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
+}
+
+# O botão/seleção "GERAR TODOS" passa a gerar somente os fluxos principais
+# do WhatsApp, sem Instagram, Entrega de Certificado, Retomada, Retroativo ou Docs.
+IDS_GERAR_TODOS_FLUXOS = ["2", "1", "3", "4", "15", "5", "6", "7", "17", "8", "9", "19", "11", "12", "13"]
+
 # --- 1. CONFIGURAÇÃO DE ENTRADA ---
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
-        fluxo_label = st.selectbox(
-            "Selecione o Fluxo:", 
-            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Entrega - Certificado Digital", "Instagram Comentário", "Instagram Story", "Instagram Comentário + Story", "Docs (Em breve) 🔒", "GERAR TODOS"],
-            index=None,
-            placeholder="Escolha uma opção"
+        fluxo_labels = st.multiselect(
+            "Selecione o(s) Fluxo(s):",
+            OPCOES_FLUXO,
+            placeholder="Escolha uma ou mais opções"
         )
-        map_labels = {
-            "Inscrição":"1", "Pré-Inscrição":"2", "F1":"3", "F2":"4", "F2.1":"15", "F3":"5", 
-            "F4":"6", "F5":"7", "F5.1":"17", "F6":"8", "F7":"9", "SC0":"19", "SC1":"11", "SC2":"12", 
-            "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Entrega - Certificado Digital":"20", "Instagram Comentário":"21", "Instagram Story":"22", "Instagram Comentário + Story":"23", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
-        }
-        id_fluxo = map_labels.get(fluxo_label)
+
+        # Compatibilidade: várias partes do app usam id_fluxo.
+        # Agora ele representa a lista completa de IDs selecionados.
+        ids_fluxos = [MAP_LABELS[label] for label in fluxo_labels if label in MAP_LABELS]
+        id_fluxo = ids_fluxos[0] if len(ids_fluxos) == 1 else None
+        fluxo_label = fluxo_labels[0] if len(fluxo_labels) == 1 else None
 
     with col2:
         data_semana = st.text_input("Data do Curso (para as tags de Clique):", value="", placeholder="Ex: 16/02")
 
 # --- LÓGICA ESPECÍFICA PARA RETOMADA ---
 ano_retomada = None
-if fluxo_label == "RETOMADA":
+if "RETOMADA" in fluxo_labels:
     status_visual("📂 Configuração de Retomada", "info")
     nome_fluxo_retomada = st.text_input("Nome do Fluxo (Ex: Retomada - T 2023):", placeholder="Retomada - T 2023")
     match_ano = re.search(r"202\d", nome_fluxo_retomada)
@@ -539,7 +573,7 @@ if is_retro:
         status_visual(f"💡 Modo retroativo ativo: disparos em {data_disparo_manual} e identidade do fluxo mantida como safra de {data_semana}.", "info")
 
 # --- 2. BUSCA DE DADOS ---
-if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True, disabled=not (fluxo_label and data_semana)):
+if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True, disabled=not (fluxo_labels and data_semana)):
     with st.spinner("Acessando Google Sheets..."):
         client = conectar_planilha("Informações Webhook")
         if client:
@@ -603,21 +637,13 @@ if 'cursos' in st.session_state:
         st.session_state['cursos']
     )
 
-    if id_fluxo == "14":
-        status_visual("🔒 O fluxo de Docs ainda está em desenvolvimento e o template não foi carregado.", "warning")
-        btn_disabled = True
-    else:
-        btn_disabled = False
+    if "14" in ids_fluxos:
+        status_visual("🔒 O fluxo de Docs ainda está em desenvolvimento e será ignorado na geração.", "warning")
+
+    btn_disabled = not bool(ids_fluxos)
 
     if st.button("🏗️ Gerar Arquivos e Preparar ZIP", use_container_width=True, disabled=btn_disabled):
         zip_buffer = io.BytesIO()
-        if id_fluxo == "99":
-            fluxos_alvo = [v for k, v in TEMPLATES.items() if k not in ["14", "23"]]
-        elif id_fluxo == "23":
-            fluxos_alvo = [TEMPLATES["21"], TEMPLATES["22"]]
-        else:
-            fluxos_alvo = [TEMPLATES[id_fluxo]]
-        
         arquivos_criados = 0
         mapeamento_contas = st.session_state.get('mapeamento_contas', {})
         cores_por_indice = st.session_state.get('cores_por_indice', {})
@@ -626,6 +652,20 @@ if 'cursos' in st.session_state:
         todos_os_cursos = st.session_state['cursos']
         cursos_selecionados_set = set(curso_filtro if curso_filtro else todos_os_cursos)
         
+        ids_geracao = []
+        for fluxo_id in ids_fluxos:
+            if fluxo_id == "99":
+                ids_geracao.extend(IDS_GERAR_TODOS_FLUXOS)
+            elif fluxo_id == "23":
+                ids_geracao.extend(["21", "22"])
+            elif fluxo_id != "14":
+                ids_geracao.append(fluxo_id)
+
+        # Remove duplicados preservando a ordem selecionada.
+        ids_geracao = list(dict.fromkeys(ids_geracao))
+
+        fluxos_alvo = [TEMPLATES[fluxo_id] for fluxo_id in ids_geracao if fluxo_id in TEMPLATES]
+
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for config in fluxos_alvo:
                 contadores_por_conta = {}
