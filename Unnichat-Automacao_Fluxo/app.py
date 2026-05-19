@@ -364,11 +364,16 @@ def status_visual(mensagem, tipo="info"):
 def ativar_enter_proximo_botao():
     """
     Atalho de produtividade: ao pressionar Enter, clica no próximo botão
-    lógico do processo.
+    disponível do processo.
 
-    Observação: Streamlit renderiza alguns componentes de forma assíncrona,
-    então o script abaixo registra o evento no documento pai e usa uma pequena
-    trava de tempo para evitar cliques duplicados.
+    Ordem lógica:
+      1. Buscar Cursos na Planilha
+      2. Gerar Arquivos e Preparar ZIP
+      3. Baixar Arquivos (.ZIP)
+
+    A escolha é feita pelo botão habilitado e visível na tela. Assim, depois que
+    a planilha já foi buscada, o Enter passa para "Gerar ZIP"; depois que o ZIP
+    existe, passa para "Baixar".
     """
     components.html(
         """
@@ -379,20 +384,30 @@ def ativar_enter_proximo_botao():
           if (!el) return false;
           const style = window.parent.getComputedStyle(el);
           const rect = el.getBoundingClientRect();
-          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+          return style.display !== 'none' &&
+                 style.visibility !== 'hidden' &&
+                 rect.width > 0 &&
+                 rect.height > 0;
         }
 
         function isDisabled(btn) {
           return btn.disabled ||
+                 btn.getAttribute('disabled') !== null ||
                  btn.getAttribute('aria-disabled') === 'true' ||
                  btn.closest('[aria-disabled="true"]');
         }
 
-        function findButtonByText(textParts) {
+        function buttonText(btn) {
+          return (btn.innerText || btn.textContent || '').toLowerCase();
+        }
+
+        function findEnabledButton(textParts) {
           const buttons = Array.from(doc.querySelectorAll('button'));
           return buttons.find(btn => {
-            const text = (btn.innerText || btn.textContent || '').toLowerCase();
-            return !isDisabled(btn) && isVisible(btn) && textParts.every(part => text.includes(part));
+            const text = buttonText(btn);
+            return isVisible(btn) &&
+                   !isDisabled(btn) &&
+                   textParts.every(part => text.includes(part));
           });
         }
 
@@ -402,37 +417,36 @@ def ativar_enter_proximo_botao():
 
           const target = event.target;
           const tag = (target && target.tagName ? target.tagName : '').toLowerCase();
+
           if (tag === 'textarea') return;
 
           const now = Date.now();
           if (window.parent.__cessLastEnterClick && now - window.parent.__cessLastEnterClick < 900) return;
 
-          let nextButton = null;
-
-          // Quando o foco está no campo de data, o Enter deve aplicar o valor
-          // e já acionar a busca na planilha. O pequeno atraso ajuda o Streamlit
-          // a sincronizar o texto digitado antes do clique.
-          if (tag === 'input') {
-            nextButton = findButtonByText(['buscar', 'planilha']);
-          }
-
-          if (!nextButton) {
-            nextButton =
-              findButtonByText(['gerar', 'zip']) ||
-              findButtonByText(['baixar']) ||
-              findButtonByText(['buscar', 'planilha']);
-          }
+          /*
+            A ordem aqui é intencional:
+            - Se "Baixar" existe, o ZIP já está pronto, então ele é o próximo passo.
+            - Se "Gerar ZIP" existe e está habilitado, a busca já foi feita.
+            - Se nenhum dos dois existe, o próximo passo é buscar a planilha.
+          */
+          const nextButton =
+            findEnabledButton(['baixar']) ||
+            findEnabledButton(['gerar', 'zip']) ||
+            findEnabledButton(['buscar', 'planilha']);
 
           if (nextButton) {
             window.parent.__cessLastEnterClick = now;
             event.preventDefault();
             event.stopPropagation();
-            setTimeout(() => nextButton.click(), tag === 'input' ? 260 : 40);
+
+            setTimeout(() => {
+              nextButton.click();
+            }, tag === 'input' ? 180 : 60);
           }
         }
 
-        if (!window.parent.__cessEnterShortcutInstalledV3) {
-          window.parent.__cessEnterShortcutInstalledV3 = true;
+        if (!window.parent.__cessEnterShortcutInstalledV4) {
+          window.parent.__cessEnterShortcutInstalledV4 = true;
           doc.addEventListener('keydown', clickNextButton, true);
           window.parent.addEventListener('keydown', clickNextButton, true);
         }
