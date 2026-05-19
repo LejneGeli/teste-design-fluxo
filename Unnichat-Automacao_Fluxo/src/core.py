@@ -653,6 +653,96 @@ TEMPLATES_WHATSAPP = {
     },
 }
 
+def normalizar_chave(texto):
+    """Normaliza textos para comparação simples entre planilhas."""
+    return str(texto or "").strip().casefold()
+
+
+def montar_link_inscricao_instagram(linha):
+    """
+    Descobre o link de inscrição do Instagram usando os dados já existentes da linha.
+
+    Prioridade:
+      1. primeiro link cessetembro.com.br encontrado na linha;
+      2. código de abertura do curso, atualmente lido da coluna J pelo fluxo antigo.
+    """
+    for valor in linha:
+        valor_str = str(valor or "").strip()
+        if (
+            "cessetembro.com.br/" in valor_str
+            and "setecertificados.com.br" not in valor_str
+            and "webhook" not in valor_str.lower()
+        ):
+            return valor_str
+
+    codigo_abertura = limpar_para_json(linha[9]) if len(linha) > 9 else ""
+    if codigo_abertura.startswith("http"):
+        return codigo_abertura
+    if codigo_abertura:
+        return f"https://cessetembro.com.br/{codigo_abertura.lstrip('/')}"
+    return ""
+
+
+def montar_tags_instagram(nome_curso, data_inicio_curso, origem):
+    """
+    Monta as tags dos fluxos de Instagram mantendo o mesmo padrão visual
+    para Comentário e Story.
+    """
+    return {
+        "interesse": f"[{nome_curso}] - Interesse [G] [{origem}]",
+        "depois": f"[{nome_curso}] - Deixa para Depois [G] [{origem}]",
+        "click_m1": f"[{nome_curso}] - Clicou inscrever-se [G] [M1] [{origem}] [{data_inicio_curso}]",
+        "click_dd": f"[{nome_curso}] - Clicou inscrever-se [G] [DD] [{origem}] [{data_inicio_curso}]",
+        "click_m2": f"[{nome_curso}] - Clicou inscrever-se [G] [M2] [{origem}] [{data_inicio_curso}]",
+        "click_cursos": f"[{nome_curso}] - Clicou + Cursos [G] [DD] [{origem}]",
+    }
+
+
+def processar_instagram(
+    linha,
+    data_ancora,
+    path_template,
+    num_fluxo,
+    origem,
+):
+    """
+    Processa templates de Instagram.
+
+    Esses fluxos usam uma aba auxiliar, Instagram_Infos, para buscar o número
+    do gatilho. O restante é montado automaticamente a partir do curso,
+    da data da semana e do padrão de tags.
+    """
+    nome_curso = limpar_para_json(linha[0]) if linha else ""
+    num_fluxo = limpar_para_json(num_fluxo)
+    link_inscricao = montar_link_inscricao_instagram(linha)
+
+    tags = montar_tags_instagram(nome_curso, data_ancora, origem)
+
+    with open(path_template, "r", encoding="utf-8") as f:
+        conteudo = f.read()
+
+    prefixo = "comentario" if origem == "Comentário" else "story"
+
+    substituicoes = {
+        "{{curso}}": nome_curso,
+        "{{num_fluxo}}": num_fluxo,
+        "{{link_inscricao}}": link_inscricao,
+        "{{data_inicio_curso}}": data_ancora,
+
+        f"{{{{tag_ig_{prefixo}_interesse}}}}": tags["interesse"],
+        f"{{{{tag_ig_{prefixo}_depois}}}}": tags["depois"],
+        f"{{{{tag_ig_{prefixo}_click_m1}}}}": tags["click_m1"],
+        f"{{{{tag_ig_{prefixo}_click_dd}}}}": tags["click_dd"],
+        f"{{{{tag_ig_{prefixo}_click_m2}}}}": tags["click_m2"],
+        f"{{{{tag_ig_{prefixo}_click_cursos}}}}": tags["click_cursos"],
+    }
+
+    for tag, valor in substituicoes.items():
+        conteudo = conteudo.replace(tag, str(valor))
+
+    return json.loads(conteudo)
+
+
 def processar_curso(
     linha,
     data_ancora,

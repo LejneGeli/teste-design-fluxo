@@ -24,7 +24,7 @@ except Exception as e:
     st.error(f"Erro ao importar drive_sync.py: {e}")
     st.stop()
     
-from src.core import processar_curso, obter_template_whatsapp
+from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
 
 # Configuração da Interface
 favicon_path = os.path.join(BASE_DIR, "logo-site.png")
@@ -362,6 +362,37 @@ def identificar_tipo_evento(nome_item):
     nome = str(nome_item or "").strip()
     return "congresso" if nome[:1].isdigit() else "curso"
 
+
+def buscar_infos_instagram(client, spreadsheet_name="Informações Webhook", worksheet_name="Instagram_Infos"):
+    """
+    Lê a aba Instagram_Infos e devolve:
+        { curso_normalizado: {"curso": Curso, "num_fluxo": Num} }
+
+    Estrutura esperada:
+        Coluna A: Curso
+        Coluna B: Num
+    """
+    try:
+        aba = client.open(spreadsheet_name).worksheet(worksheet_name)
+        linhas = aba.get_all_values(value_render_option="FORMATTED_VALUE")
+    except Exception as e:
+        status_visual(f"⚠️ Não consegui ler a aba {worksheet_name}: {e}", "warning")
+        return {}
+
+    infos = {}
+    for linha in linhas[1:]:
+        if len(linha) < 2:
+            continue
+        curso = str(linha[0]).strip()
+        num_fluxo = str(linha[1]).strip()
+        if curso and num_fluxo:
+            infos[normalizar_chave(curso)] = {
+                "curso": curso,
+                "num_fluxo": num_fluxo,
+            }
+    return infos
+
+
 aplicar_design()
 
 # Mapeamento Global dos Fluxos
@@ -384,6 +415,9 @@ TEMPLATES = {
     "18": {"nome": "Retroativo",    "path": template_path("esqueleto_fluxo_sc3.json"),      "subpasta": "Fluxo_Retroativo"},
     "16": {"nome": "RETOMADA",      "path": template_path("esqueleto_retomada.json"),       "subpasta": "Fluxo_Retomada"},
     "20": {"nome": "Entrega - Certificado Digital", "path": template_path("esqueleto_entrega_certificado_digital.json"), "subpasta": "Fluxo_Entrega_Certificado_Digital"},
+    "21": {"nome": "Instagram Comentário", "path": template_path("esqueleto_instagram_comentario.json"), "subpasta": "Fluxo_Instagram_Comentario", "tipo": "instagram", "origem": "Comentário"},
+    "22": {"nome": "Instagram Story", "path": template_path("esqueleto_instagram_story.json"), "subpasta": "Fluxo_Instagram_Story", "tipo": "instagram", "origem": "Story"},
+    "23": {"nome": "Instagram Comentário + Story", "path": None, "subpasta": "Fluxo_Instagram", "tipo": "instagram_duplo"},
     "14": {"nome": "Docs",          "path": template_path("esqueleto_docs.json"),           "subpasta": "Fluxo_Docs"}
 }
 
@@ -396,14 +430,14 @@ with st.container():
     with col1:
         fluxo_label = st.selectbox(
             "Selecione o Fluxo:", 
-            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Entrega - Certificado Digital", "Docs (Em breve) 🔒", "GERAR TODOS"],
+            ["Inscrição", "Pré-Inscrição", "F1", "F2", "F2.1", "F3", "F4", "F5", "F5.1", "F6", "F7", "SC0", "SC1", "SC2", "SC3", "Retroativo", "RETOMADA", "Entrega - Certificado Digital", "Instagram Comentário", "Instagram Story", "Instagram Comentário + Story", "Docs (Em breve) 🔒", "GERAR TODOS"],
             index=None,
             placeholder="Escolha uma opção"
         )
         map_labels = {
             "Inscrição":"1", "Pré-Inscrição":"2", "F1":"3", "F2":"4", "F2.1":"15", "F3":"5", 
             "F4":"6", "F5":"7", "F5.1":"17", "F6":"8", "F7":"9", "SC0":"19", "SC1":"11", "SC2":"12", 
-            "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Entrega - Certificado Digital":"20", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
+            "SC3":"13", "Retroativo":"18", "RETOMADA":"16", "Entrega - Certificado Digital":"20", "Instagram Comentário":"21", "Instagram Story":"22", "Instagram Comentário + Story":"23", "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
         }
         id_fluxo = map_labels.get(fluxo_label)
 
@@ -473,6 +507,9 @@ if st.button("🔍 Buscar Cursos na Planilha", use_container_width=True, disable
                     st.session_state['mapeamento_contas'] = mapeamento_contas
                     st.session_state['cores_por_indice'] = cores_por_indice
 
+                    with st.spinner("Lendo informações do Instagram..."):
+                        st.session_state['instagram_infos'] = buscar_infos_instagram(client)
+
                     if mapeamento_contas:
                         contas = ", ".join(sorted(set(mapeamento_contas.values())))
                         status_visual(f"✅ {len(cursos_encontrados)} cursos encontrados. Contas detectadas: {contas}.", "success")
@@ -502,13 +539,16 @@ if 'cursos' in st.session_state:
     if st.button("🏗️ Gerar Arquivos e Preparar ZIP", use_container_width=True, disabled=btn_disabled):
         zip_buffer = io.BytesIO()
         if id_fluxo == "99":
-            fluxos_alvo = [v for k, v in TEMPLATES.items() if k != "14"]
+            fluxos_alvo = [v for k, v in TEMPLATES.items() if k not in ["14", "23"]]
+        elif id_fluxo == "23":
+            fluxos_alvo = [TEMPLATES["21"], TEMPLATES["22"]]
         else:
             fluxos_alvo = [TEMPLATES[id_fluxo]]
         
         arquivos_criados = 0
         mapeamento_contas = st.session_state.get('mapeamento_contas', {})
         cores_por_indice = st.session_state.get('cores_por_indice', {})
+        instagram_infos = st.session_state.get('instagram_infos', {})
 
         todos_os_cursos = st.session_state['cursos']
         cursos_selecionados_set = set(curso_filtro if curso_filtro else todos_os_cursos)
@@ -550,25 +590,39 @@ if 'cursos' in st.session_state:
 
                     contador_delay_conta = contadores_por_conta[conta_pasta]
                     dados_template_whatsapp = obter_template_whatsapp(conta_pasta, config["nome"], tipo_evento=tipo_evento)
-                    
+
                     try:
-                        json_data = processar_curso(
-                            linha, 
-                            data_semana, 
-                            config['path'], 
-                            contador_delay_conta, 
-                            tipo_fluxo=nome_fluxo_ativo,
-                            data_disparo=data_disparo_manual,
-                            ano_retomada=ano_retomada,
-                            total_cursos=total_cursos_semana,
-                            dados_template_whatsapp=dados_template_whatsapp,
-                            usar_delay_retomada=(nome_fluxo_ativo == "RETOMADA"),
-                            modo_congresso=modo_congresso
-                        )
-                        
+                        if config.get("tipo") == "instagram":
+                            info_ig = instagram_infos.get(normalizar_chave(nome_curso))
+                            if not info_ig:
+                                status_visual(f"⚠️ Instagram: curso '{nome_curso}' não encontrado na aba Instagram_Infos.", "warning")
+                                continue
+
+                            json_data = processar_instagram(
+                                linha,
+                                data_semana,
+                                config["path"],
+                                info_ig["num_fluxo"],
+                                config["origem"],
+                            )
+                        else:
+                            json_data = processar_curso(
+                                linha, 
+                                data_semana, 
+                                config['path'], 
+                                contador_delay_conta, 
+                                tipo_fluxo=nome_fluxo_ativo,
+                                data_disparo=data_disparo_manual,
+                                ano_retomada=ano_retomada,
+                                total_cursos=total_cursos_semana,
+                                dados_template_whatsapp=dados_template_whatsapp,
+                                usar_delay_retomada=(nome_fluxo_ativo == "RETOMADA"),
+                                modo_congresso=modo_congresso
+                            )
+
                         nome_limpo = nome_curso.replace(" ", "_").replace("/", "-").replace(":", "")
                         caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
-                        
+
                         zip_file.writestr(caminho_zip, json.dumps(json_data, indent=2, ensure_ascii=False))
                         arquivos_criados += 1
                         contadores_por_conta[conta_pasta] += 1

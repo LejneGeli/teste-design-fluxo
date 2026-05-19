@@ -1,0 +1,336 @@
+{
+  "name": "[{{num_fluxo}}] [G] [Comentário] {{curso}}",
+  "category": "automation",
+  "status": "idle",
+  "connectionType": "instagram",
+  "folderId": "dFtDBjhy7Xra3d3BnU7W",
+  "node": {
+    "triggers": [
+      {
+        "wordsTriggers": [
+          "{{num_fluxo}}"
+        ],
+        "interaction": "comment-in-the-post",
+        "replyPostTexts": [
+          {
+            "id": 0,
+            "text": "Enviei mensagem no seu direct 😁"
+          }
+        ],
+        "caseSentive": false,
+        "instagramSegment": "all",
+        "postSegment": "all",
+        "type": "trigger-words"
+      }
+    ],
+    "pos": "{\"x\":-214.0205150743501,\"y\":-7.4346991714209025}",
+    "id": "k2aK0G1FUM66poAwNbdg",
+    "type": {
+      "id": "4nys1qmtlOdNUdKj0ZzJ",
+      "icon": "init",
+      "color": "transparent",
+      "tag": "init"
+    },
+    "lastEditedBy": "karloscess7@gmail.com",
+    "sonId": "9E2SuWxkposwwzjaZ8Q2",
+    "nodes": [
+      {
+        "id": "3MxzVbzJh50EGrXjqEy0",
+        "type": {
+          "icon": "",
+          "color": "transparent",
+          "tag": "action",
+          "id": "action"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "action": {
+          "type": "add_tag",
+          "unniiaForceReply": false,
+          "forceAttribution": false,
+          "unniiaAtributionOnly": false,
+          "keepChatActive": false,
+          "userResourceGroupSendRandomic": false,
+          "tags": [
+            "[{{curso}}] - Clicou inscrever-se [G] [DD] [Comentário] [01/06/2026]"
+          ]
+        },
+        "pos": "{\"x\":1371.2883030464272,\"y\":662.1549364103874}"
+      },
+      {
+        "pos": "{\"x\":1845.9751559909455,\"y\":357.4468013311835}",
+        "type": {
+          "color": "transparent",
+          "icon": "",
+          "tag": "conditionalV2",
+          "id": "conditionalV2"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "5DGJCupdROPyDvjxoYt3",
+        "conditionalV2": {
+          "groupConditions": [
+            {
+              "sonId": "S4frc5U5X2OSR95eozrC",
+              "conditionType": "or",
+              "name": "",
+              "conditions": [
+                {
+                  "type": "not-contains-some-tag",
+                  "tags": [
+                    "[{{curso}}] - Clicou inscrever-se [G] [M1] [Comentário] [01/06/2026]",
+                    "[{{curso}}] - Clicou inscrever-se [G] [DD] [Comentário] [01/06/2026]"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "direct": {
+          "messageType": "private-reply",
+          "buttons": [
+            {
+              "payload": "ou665QlxCs5Tkb54JyT1",
+              "sonId": "Lh0uj23hddEwmhBiJZx3",
+              "title": "Pode sim",
+              "id": "Wdo7GIjMh31leH14JNYP",
+              "type": "postback"
+            },
+            {
+              "id": "TxYOmcAI7GdET9l2qV2b",
+              "type": "postback",
+              "payload": "E5EwyHSvDPXScveo5pbI",
+              "title": "Deixa para depois",
+              "sonId": "NYAtwG1sEEp1qujdSD81"
+            }
+          ],
+          "buttonTitle": "Olá {{name}}, tudo bem?\nPosso te enviar o link de inscrição do curso de {{curso}}?"
+        },
+        "lastEditedBy": "karloscess7@gmail.com",
+        "id": "9E2SuWxkposwwzjaZ8Q2",
+        "type": {
+          "id": "direct",
+          "tag": "direct",
+          "icon": "",
+          "color": "transparent"
+        },
+        "pos": "{\"x\":155.64244309308333,\"y\":-34.03383930870683}"
+      },
+      {
+        "action": {
+          "keepChatActive": false,
+          "userResourceGroupSendRandomic": false,
+          "unniiaAtributionOnly": false,
+          "type": "add_tag",
+          "forceAttribution": false,
+          "tags": [
+            "[{{curso}}] - Clicou + Cursos [G] [DD] [Comentário]"
+          ]
+        },
+        "pos": "{\"x\":1844.777369605934,\"y\":-54.87456693327931}",
+        "id": "EIZKWF5nh3NcesiJBMif",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "type": {
+          "id": "action",
+          "tag": "action",
+          "icon": "",
+          "color": "transparent"
+        }
+      },
+      {
+        "direct": {
+          "buttonTitle": "👍 Sem problemas!\nVou deixar salvo aqui pra você. Quando quiser, é só clicar no botão abaixo para se inscrever\n\n📌 Só lembrando: as vagas são gratuitas, mas por tempo limitado",
+          "buttons": [
+            {
+              "id": "HNXJbwr6mYcZNl8MWJMm",
+              "type": "web_url",
+              "url": "{{link_inscricao}}",
+              "sonId": "3MxzVbzJh50EGrXjqEy0",
+              "campaignId": "78CilHTZyJECLVKNevFY",
+              "title": "Garantir minha vaga"
+            }
+          ],
+          "messageType": "buttons"
+        },
+        "pos": "{\"x\":955.4275666500154,\"y\":338.0810508917213}",
+        "id": "HdFrSi0Q1r1Z70tmS1Fm",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "type": {
+          "tag": "direct",
+          "color": "transparent",
+          "icon": "",
+          "id": "direct"
+        }
+      },
+      {
+        "sonId": "wcOCtjUzSTNz9C9RKd8b",
+        "pos": "{\"x\":540.2430744464771,\"y\":-165.78391787774285}",
+        "action": {
+          "unniiaAtributionOnly": false,
+          "type": "add_tag",
+          "forceAttribution": false,
+          "userResourceGroupSendRandomic": false,
+          "keepChatActive": false,
+          "tags": [
+            "[{{curso}}] - Interesse [G] [Comentário]"
+          ]
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "Lh0uj23hddEwmhBiJZx3",
+        "type": {
+          "tag": "action",
+          "color": "transparent",
+          "icon": "",
+          "id": "action"
+        }
+      },
+      {
+        "sonId": "HdFrSi0Q1r1Z70tmS1Fm",
+        "id": "NYAtwG1sEEp1qujdSD81",
+        "type": {
+          "id": "action",
+          "tag": "action",
+          "icon": "",
+          "color": "transparent"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "action": {
+          "unniiaAtributionOnly": false,
+          "forceAttribution": false,
+          "type": "add_tag",
+          "userResourceGroupSendRandomic": false,
+          "keepChatActive": false,
+          "tags": [
+            "[{{curso}}] - Deixa para Depois [G] [Comentário]"
+          ]
+        },
+        "pos": "{\"x\":539.0152513811356,\"y\":339.633532199117}"
+      },
+      {
+        "id": "S4frc5U5X2OSR95eozrC",
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "type": {
+          "tag": "direct",
+          "color": "transparent",
+          "icon": "",
+          "id": "direct"
+        },
+        "pos": "{\"x\":2264.8786067888022,\"y\":366.9541349461401}",
+        "direct": {
+          "buttonTitle": "👀 Notei que você ainda não concluiu sua inscrição.\n\nSem problemas! Caso queira garantir sua vaga, é só clicar no botão abaixo\n\n📌 Lembrando que as vagas são gratuitas, mas por tempo limitado.",
+          "buttons": [
+            {
+              "title": "Garantir minha vaga",
+              "campaignId": "L5PJ6oXYJcEzaNPpofGn",
+              "sonId": "wl5G2ElgXVe6pAmGMY4e",
+              "type": "web_url",
+              "url": "{{link_inscricao}}",
+              "id": "tlLdbsH3JrYJNJ2Vz9Ir"
+            }
+          ],
+          "messageType": "buttons"
+        }
+      },
+      {
+        "pos": "{\"x\":1529.5083648884743,\"y\":-389.32806355358355}",
+        "action": {
+          "keepChatActive": false,
+          "userResourceGroupSendRandomic": false,
+          "unniiaAtributionOnly": false,
+          "type": "add_tag",
+          "unniiaForceReply": false,
+          "forceAttribution": false,
+          "tags": [
+            "[{{curso}}] - Clicou inscrever-se [G] [M1] [Comentário] [01/06/2026]"
+          ]
+        },
+        "id": "hEcoJEB45rPe7T8ZNe3W",
+        "type": {
+          "color": "transparent",
+          "icon": "",
+          "tag": "action",
+          "id": "action"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com"
+      },
+      {
+        "pos": "{\"x\":957.9897457943421,\"y\":-339.5065738649147}",
+        "type": {
+          "tag": "direct",
+          "color": "transparent",
+          "icon": "",
+          "id": "direct"
+        },
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "wcOCtjUzSTNz9C9RKd8b",
+        "direct": {
+          "buttonTitle": "Para se inscrever no curso de {{curso}} basta clicar no botão abaixo.\n\nBons estudos! 😁",
+          "buttons": [
+            {
+              "type": "web_url",
+              "url": "{{link_inscricao}}",
+              "id": "x3wXCxF7ZRcS8Z8NaeTU",
+              "sonId": "hEcoJEB45rPe7T8ZNe3W",
+              "campaignId": "n7E8da9RnaAWhly4VPpn",
+              "title": "Realizar inscrição"
+            },
+            {
+              "type": "web_url",
+              "id": "sodMyoelTGvXuGuywZkm",
+              "url": "https://cessetembro.com.br/cursos",
+              "sonId": "EIZKWF5nh3NcesiJBMif",
+              "campaignId": "WmAQj8vVjW0FJPpFTgm8",
+              "title": "+ Cursos gratuitos"
+            }
+          ],
+          "messageType": "buttons"
+        },
+        "sonId": "zdTYRyW0a6aKiNPeaXUL"
+      },
+      {
+        "lastEditedBy": "carolinelejnecess7@gmail.com",
+        "id": "wl5G2ElgXVe6pAmGMY4e",
+        "type": {
+          "tag": "action",
+          "icon": "",
+          "color": "transparent",
+          "id": "action"
+        },
+        "pos": "{\"x\":2679.504849406732,\"y\":351.2276328293835}",
+        "action": {
+          "type": "add_tag",
+          "unniiaForceReply": false,
+          "forceAttribution": false,
+          "unniiaAtributionOnly": false,
+          "userResourceGroupSendRandomic": false,
+          "keepChatActive": false,
+          "tags": [
+            "[{{curso}}] - Clicou inscrever-se [G] [M2] [Comentário] [01/06/2026]"
+          ]
+        }
+      },
+      {
+        "pos": "{\"x\":1459.3816180967622,\"y\":249.51157220780055}",
+        "type": {
+          "id": "delay",
+          "color": "transparent",
+          "icon": "",
+          "tag": "delay"
+        },
+        "id": "zdTYRyW0a6aKiNPeaXUL",
+        "sonId": "5DGJCupdROPyDvjxoYt3",
+        "delay": {
+          "type": "minutes",
+          "time": 15,
+          "sendMessagesIntervalRange": [
+            10,
+            201
+          ],
+          "sendMessagesIntervalRangeType": "minutes",
+          "isComercialInterval": false
+        }
+      }
+    ]
+  },
+  "customFieldsToCreate": {}
+}
