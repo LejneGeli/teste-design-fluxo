@@ -637,6 +637,28 @@ MAP_LABELS = {
     "Docs (Em breve) 🔒": "14", "GERAR TODOS":"99"
 }
 
+MAP_LABELS_NORMALIZADO = {
+    normalizar_nome_busca(label): fluxo_id
+    for label, fluxo_id in MAP_LABELS.items()
+}
+
+def ids_dos_fluxos_selecionados(labels):
+    """
+    Converte os nomes selecionados no multiselect para IDs de fluxo.
+
+    Usa comparação normalizada para evitar falhas por acento, emoji,
+    espaços invisíveis ou pequenas diferenças de texto do componente.
+    """
+    ids = []
+    for label in labels or []:
+        label_str = str(label).strip()
+        fluxo_id = MAP_LABELS.get(label_str)
+        if not fluxo_id:
+            fluxo_id = MAP_LABELS_NORMALIZADO.get(normalizar_nome_busca(label_str))
+        if fluxo_id:
+            ids.append(fluxo_id)
+    return ids
+
 # O botão/seleção "GERAR TODOS" passa a gerar somente os fluxos principais
 # do WhatsApp, sem Instagram, Entrega de Certificado, Retomada, Retroativo ou Docs.
 IDS_GERAR_TODOS_FLUXOS = ["2", "1", "3", "4", "15", "5", "6", "7", "17", "8", "9", "19", "11", "12", "13"]
@@ -648,17 +670,29 @@ with st.container():
         fluxo_labels = st.multiselect(
             "Selecione o(s) Fluxo(s):",
             OPCOES_FLUXO,
-            placeholder="Escolha uma ou mais opções"
+            placeholder="Escolha uma ou mais opções",
+            key="fluxo_labels"
         )
 
         # Compatibilidade: várias partes do app usam id_fluxo.
         # Agora ele representa a lista completa de IDs selecionados.
-        ids_fluxos = [MAP_LABELS[label] for label in fluxo_labels if label in MAP_LABELS]
+        ids_fluxos = ids_dos_fluxos_selecionados(fluxo_labels)
+
+        # Guarda em sessão para não perder a seleção depois que o Streamlit rerenderiza.
+        st.session_state["ids_fluxos"] = ids_fluxos
+        st.session_state["fluxos_selecionados"] = fluxo_labels
+
         id_fluxo = ids_fluxos[0] if len(ids_fluxos) == 1 else None
         fluxo_label = fluxo_labels[0] if len(fluxo_labels) == 1 else None
 
     with col2:
-        data_semana = st.text_input("Data do Curso (para as tags de Clique):", value="", placeholder="Ex: 16/02")
+        data_semana = st.text_input(
+            "Data do Curso (para as tags de Clique):",
+            value="",
+            placeholder="Ex: 16/02",
+            key="data_semana_input"
+        ).strip()
+        st.session_state["data_semana"] = data_semana
 
 # --- LÓGICA ESPECÍFICA PARA RETOMADA ---
 ano_retomada = None
@@ -685,7 +719,7 @@ if is_retro:
 buscar_planilha = st.button(
     "🔍 Buscar Cursos na Planilha",
     use_container_width=True,
-    disabled=not (fluxo_labels and data_semana)
+    disabled=not (ids_fluxos and data_semana)
 )
 
 if buscar_planilha:
@@ -754,10 +788,17 @@ if 'cursos' in st.session_state:
         st.session_state['cursos']
     )
 
-    if "14" in ids_fluxos:
+    # Usa a seleção atual; se o componente rerenderizar de forma estranha,
+    # usa a última seleção salva na sessão.
+    ids_fluxos_geracao = ids_fluxos or st.session_state.get("ids_fluxos", [])
+
+    if "14" in ids_fluxos_geracao:
         status_visual("🔒 O fluxo de Docs ainda está em desenvolvimento e será ignorado na geração.", "warning")
 
-    btn_disabled = not bool(ids_fluxos)
+    btn_disabled = not bool(ids_fluxos_geracao)
+
+    if not ids_fluxos_geracao:
+        status_visual("⚠️ Selecione pelo menos um fluxo para liberar a geração.", "warning")
 
     gerar = st.button(
         "🏗️ Gerar Arquivos e Preparar ZIP",
@@ -778,7 +819,7 @@ if 'cursos' in st.session_state:
         cursos_selecionados_set = set(curso_filtro if curso_filtro else todos_os_cursos)
         
         ids_geracao = []
-        for fluxo_id in ids_fluxos:
+        for fluxo_id in ids_fluxos_geracao:
             if fluxo_id == "99":
                 ids_geracao.extend(IDS_GERAR_TODOS_FLUXOS)
             elif fluxo_id == "23":
