@@ -362,10 +362,11 @@ def status_visual(mensagem, tipo="info"):
 def ativar_enter_proximo_botao():
     """
     Atalho de produtividade: ao pressionar Enter, clica no próximo botão
-    lógico do processo. A prioridade é:
-      1. baixar ZIP, quando ele já estiver pronto;
-      2. gerar ZIP, quando os cursos já foram buscados;
-      3. buscar cursos, no início do processo.
+    lógico do processo.
+
+    Observação: Streamlit renderiza alguns componentes de forma assíncrona,
+    então o script abaixo registra o evento no documento pai e usa uma pequena
+    trava de tempo para evitar cliques duplicados.
     """
     components.html(
         """
@@ -379,35 +380,48 @@ def ativar_enter_proximo_botao():
           return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
         }
 
+        function isDisabled(btn) {
+          return btn.disabled ||
+                 btn.getAttribute('aria-disabled') === 'true' ||
+                 btn.closest('[aria-disabled="true"]');
+        }
+
         function findButtonByText(textParts) {
           const buttons = Array.from(doc.querySelectorAll('button'));
           return buttons.find(btn => {
             const text = (btn.innerText || btn.textContent || '').toLowerCase();
-            const disabled = btn.disabled || btn.getAttribute('aria-disabled') === 'true';
-            return !disabled && isVisible(btn) && textParts.every(part => text.includes(part));
+            return !isDisabled(btn) && isVisible(btn) && textParts.every(part => text.includes(part));
           });
         }
 
-        if (!window.parent.__cessEnterShortcutInstalled) {
-          window.parent.__cessEnterShortcutInstalled = true;
-          doc.addEventListener('keydown', function(event) {
-            if (event.key !== 'Enter') return;
-            if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return;
+        function clickNextButton(event) {
+          if (event.key !== 'Enter' && event.code !== 'Enter' && event.code !== 'NumpadEnter') return;
+          if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return;
 
-            const target = event.target;
-            const tag = (target && target.tagName ? target.tagName : '').toLowerCase();
-            if (tag === 'textarea') return;
+          const target = event.target;
+          const tag = (target && target.tagName ? target.tagName : '').toLowerCase();
+          if (tag === 'textarea') return;
 
-            const nextButton =
-              findButtonByText(['baixar']) ||
-              findButtonByText(['gerar', 'zip']) ||
-              findButtonByText(['buscar', 'planilha']);
+          const now = Date.now();
+          if (window.parent.__cessLastEnterClick && now - window.parent.__cessLastEnterClick < 900) return;
 
-            if (nextButton) {
-              event.preventDefault();
-              nextButton.click();
-            }
-          }, true);
+          const nextButton =
+            findButtonByText(['baixar']) ||
+            findButtonByText(['gerar', 'zip']) ||
+            findButtonByText(['buscar', 'planilha']);
+
+          if (nextButton) {
+            window.parent.__cessLastEnterClick = now;
+            event.preventDefault();
+            event.stopPropagation();
+            setTimeout(() => nextButton.click(), 30);
+          }
+        }
+
+        if (!window.parent.__cessEnterShortcutInstalledV2) {
+          window.parent.__cessEnterShortcutInstalledV2 = true;
+          doc.addEventListener('keydown', clickNextButton, true);
+          window.parent.addEventListener('keydown', clickNextButton, true);
         }
         </script>
         """,

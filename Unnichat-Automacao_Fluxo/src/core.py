@@ -689,14 +689,30 @@ def montar_link_inscricao_instagram(linha):
 def formatar_data_tag_instagram(data_inicio_curso):
     """Formata a data usada no final das tags do Instagram.
 
-    A interface normalmente recebe DD/MM, mas as tags do Unnichat usam
-    DD/MM/AAAA para identificar a semana da campanha com mais clareza.
+    As tags do Unnichat precisam identificar a semana com ano completo,
+    por exemplo: [22/06/2026]. A tela normalmente recebe só DD/MM,
+    então esta função completa o ano automaticamente.
     """
     data = str(data_inicio_curso or "").strip()
     if not data:
         return data
-    if len(data.split("/")) == 2:
-        return f"{data}/2026"
+
+    # Remove espaços extras e possíveis colchetes, caso a data venha reaproveitada
+    # de algum texto/template.
+    data = data.replace("[", "").replace("]", "").strip()
+
+    partes = [parte.strip() for parte in data.split("/") if parte.strip()]
+
+    # Entrada padrão da interface: DD/MM -> DD/MM/2026
+    if len(partes) == 2:
+        dia, mes = partes
+        return f"{dia.zfill(2)}/{mes.zfill(2)}/2026"
+
+    # Caso já venha com ano, apenas normaliza DD/MM/AAAA.
+    if len(partes) == 3:
+        dia, mes, ano = partes
+        return f"{dia.zfill(2)}/{mes.zfill(2)}/{ano}"
+
     return data
 
 
