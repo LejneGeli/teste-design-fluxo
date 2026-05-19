@@ -51,7 +51,7 @@
           "keepChatActive": false,
           "userResourceGroupSendRandomic": false,
           "tags": [
-            "[{{curso}}] - Clicou inscrever-se [G] [DD] [Comentário] [01/06/2026]"
+            "{{tag_ig_comentario_click_dd}}"
           ]
         },
         "pos": "{\"x\":1371.2883030464272,\"y\":662.1549364103874}"
@@ -76,8 +76,8 @@
                 {
                   "type": "not-contains-some-tag",
                   "tags": [
-                    "[{{curso}}] - Clicou inscrever-se [G] [M1] [Comentário] [01/06/2026]",
-                    "[{{curso}}] - Clicou inscrever-se [G] [DD] [Comentário] [01/06/2026]"
+                    "{{tag_ig_comentario_click_m1}}",
+                    "{{tag_ig_comentario_click_dd}}"
                   ]
                 }
               ]
@@ -124,7 +124,7 @@
           "type": "add_tag",
           "forceAttribution": false,
           "tags": [
-            "[{{curso}}] - Clicou + Cursos [G] [DD] [Comentário]"
+            "{{tag_ig_comentario_click_cursos}}"
           ]
         },
         "pos": "{\"x\":1844.777369605934,\"y\":-54.87456693327931}",
@@ -172,7 +172,7 @@
           "userResourceGroupSendRandomic": false,
           "keepChatActive": false,
           "tags": [
-            "[{{curso}}] - Interesse [G] [Comentário]"
+            "{{tag_ig_comentario_interesse}}"
           ]
         },
         "lastEditedBy": "carolinelejnecess7@gmail.com",
@@ -201,7 +201,7 @@
           "userResourceGroupSendRandomic": false,
           "keepChatActive": false,
           "tags": [
-            "[{{curso}}] - Deixa para Depois [G] [Comentário]"
+            "{{tag_ig_comentario_depois}}"
           ]
         },
         "pos": "{\"x\":539.0152513811356,\"y\":339.633532199117}"
@@ -241,7 +241,7 @@
           "unniiaForceReply": false,
           "forceAttribution": false,
           "tags": [
-            "[{{curso}}] - Clicou inscrever-se [G] [M1] [Comentário] [01/06/2026]"
+            "{{tag_ig_comentario_click_m1}}"
           ]
         },
         "id": "hEcoJEB45rPe7T8ZNe3W",
@@ -305,7 +305,7 @@
           "userResourceGroupSendRandomic": false,
           "keepChatActive": false,
           "tags": [
-            "[{{curso}}] - Clicou inscrever-se [G] [M2] [Comentário] [01/06/2026]"
+            "{{tag_ig_comentario_click_m2}}"
           ]
         }
       },

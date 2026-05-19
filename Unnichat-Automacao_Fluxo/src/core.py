@@ -660,12 +660,20 @@ def normalizar_chave(texto):
 
 def montar_link_inscricao_instagram(linha):
     """
-    Descobre o link de inscrição do Instagram usando os dados já existentes da linha.
+    Monta o link de inscrição usado nos fluxos de Instagram.
 
-    Prioridade:
-      1. primeiro link cessetembro.com.br encontrado na linha;
-      2. código de abertura do curso, atualmente lido da coluna J pelo fluxo antigo.
+    Regra atual:
+      1. usar o código do curso da coluna G da aba Cursos 2026;
+      2. NÃO usar a coluna J, porque ela contém código do curso + abertura;
+      3. se a coluna G estiver vazia, tentar reaproveitar um link cessetembro.com.br
+         já presente na linha como fallback de segurança.
     """
+    codigo_curso = limpar_para_json(linha[6]) if len(linha) > 6 else ""
+    if codigo_curso:
+        if codigo_curso.startswith("http"):
+            return codigo_curso
+        return f"https://cessetembro.com.br/{codigo_curso.lstrip('/')}"
+
     for valor in linha:
         valor_str = str(valor or "").strip()
         if (
@@ -675,12 +683,21 @@ def montar_link_inscricao_instagram(linha):
         ):
             return valor_str
 
-    codigo_abertura = limpar_para_json(linha[9]) if len(linha) > 9 else ""
-    if codigo_abertura.startswith("http"):
-        return codigo_abertura
-    if codigo_abertura:
-        return f"https://cessetembro.com.br/{codigo_abertura.lstrip('/')}"
     return ""
+
+
+def formatar_data_tag_instagram(data_inicio_curso):
+    """Formata a data usada no final das tags do Instagram.
+
+    A interface normalmente recebe DD/MM, mas as tags do Unnichat usam
+    DD/MM/AAAA para identificar a semana da campanha com mais clareza.
+    """
+    data = str(data_inicio_curso or "").strip()
+    if not data:
+        return data
+    if len(data.split("/")) == 2:
+        return f"{data}/2026"
+    return data
 
 
 def montar_tags_instagram(nome_curso, data_inicio_curso, origem):
@@ -688,12 +705,13 @@ def montar_tags_instagram(nome_curso, data_inicio_curso, origem):
     Monta as tags dos fluxos de Instagram mantendo o mesmo padrão visual
     para Comentário e Story.
     """
+    data_tag = formatar_data_tag_instagram(data_inicio_curso)
     return {
         "interesse": f"[{nome_curso}] - Interesse [G] [{origem}]",
         "depois": f"[{nome_curso}] - Deixa para Depois [G] [{origem}]",
-        "click_m1": f"[{nome_curso}] - Clicou inscrever-se [G] [M1] [{origem}] [{data_inicio_curso}]",
-        "click_dd": f"[{nome_curso}] - Clicou inscrever-se [G] [DD] [{origem}] [{data_inicio_curso}]",
-        "click_m2": f"[{nome_curso}] - Clicou inscrever-se [G] [M2] [{origem}] [{data_inicio_curso}]",
+        "click_m1": f"[{nome_curso}] - Clicou inscrever-se [G] [M1] [{origem}] [{data_tag}]",
+        "click_dd": f"[{nome_curso}] - Clicou inscrever-se [G] [DD] [{origem}] [{data_tag}]",
+        "click_m2": f"[{nome_curso}] - Clicou inscrever-se [G] [M2] [{origem}] [{data_tag}]",
         "click_cursos": f"[{nome_curso}] - Clicou + Cursos [G] [DD] [{origem}]",
     }
 

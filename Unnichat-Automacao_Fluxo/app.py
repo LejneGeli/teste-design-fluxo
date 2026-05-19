@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import json
 import io
 import zipfile
@@ -357,6 +358,63 @@ def render_header(etapa=1):
 def status_visual(mensagem, tipo="info"):
     st.markdown(f'<div class="cess-status {tipo}">{mensagem}</div>', unsafe_allow_html=True)
 
+
+def ativar_enter_proximo_botao():
+    """
+    Atalho de produtividade: ao pressionar Enter, clica no próximo botão
+    lógico do processo. A prioridade é:
+      1. baixar ZIP, quando ele já estiver pronto;
+      2. gerar ZIP, quando os cursos já foram buscados;
+      3. buscar cursos, no início do processo.
+    """
+    components.html(
+        """
+        <script>
+        const doc = window.parent.document;
+
+        function isVisible(el) {
+          if (!el) return false;
+          const style = window.parent.getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+        }
+
+        function findButtonByText(textParts) {
+          const buttons = Array.from(doc.querySelectorAll('button'));
+          return buttons.find(btn => {
+            const text = (btn.innerText || btn.textContent || '').toLowerCase();
+            const disabled = btn.disabled || btn.getAttribute('aria-disabled') === 'true';
+            return !disabled && isVisible(btn) && textParts.every(part => text.includes(part));
+          });
+        }
+
+        if (!window.parent.__cessEnterShortcutInstalled) {
+          window.parent.__cessEnterShortcutInstalled = true;
+          doc.addEventListener('keydown', function(event) {
+            if (event.key !== 'Enter') return;
+            if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return;
+
+            const target = event.target;
+            const tag = (target && target.tagName ? target.tagName : '').toLowerCase();
+            if (tag === 'textarea') return;
+
+            const nextButton =
+              findButtonByText(['baixar']) ||
+              findButtonByText(['gerar', 'zip']) ||
+              findButtonByText(['buscar', 'planilha']);
+
+            if (nextButton) {
+              event.preventDefault();
+              nextButton.click();
+            }
+          }, true);
+        }
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
 def identificar_tipo_evento(nome_item):
     """Congressos começam com número; cursos começam com letra."""
     nome = str(nome_item or "").strip()
@@ -394,6 +452,7 @@ def buscar_infos_instagram(client, spreadsheet_name="Informações Webhook", wor
 
 
 aplicar_design()
+ativar_enter_proximo_botao()
 
 # Mapeamento Global dos Fluxos
 TEMPLATES = {
@@ -621,7 +680,14 @@ if 'cursos' in st.session_state:
                             )
 
                         nome_limpo = nome_curso.replace(" ", "_").replace("/", "-").replace(":", "")
-                        caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
+
+                        if config.get("tipo") == "instagram":
+                            # Instagram é sempre organizado por curso, porque Comentário e Story
+                            # são criados juntos no processo da equipe.
+                            nome_origem = str(config.get("origem", "Instagram")).replace("á", "a").replace("ó", "o")
+                            caminho_zip = f"Fluxo_Instagram/{nome_limpo}/{nome_origem}.json"
+                        else:
+                            caminho_zip = f"{config['subpasta']}/{conta_pasta}/{nome_limpo}.json"
 
                         zip_file.writestr(caminho_zip, json.dumps(json_data, indent=2, ensure_ascii=False))
                         arquivos_criados += 1
