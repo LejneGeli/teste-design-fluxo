@@ -835,12 +835,12 @@ if 'cursos' in st.session_state:
                         if abertura_aux.get("nomeCurso", "").strip() in cursos_selecionados_set
                     )
                 
-                for i in range(st.session_state['index_inicio'], len(st.session_state['dados_planilha'])):
-                    linha = st.session_state['dados_planilha'][i]
-                    if not linha or not linha[0].strip() or (len(linha) > 1 and "Semana" in str(linha[1])):
-                        break
-                    
-                    nome_curso = linha[0].strip()
+                for i, abertura in enumerate(st.session_state["dados_planilha"]):
+                    nome_curso = abertura.get("nomeCurso", "").strip()
+
+                    if not nome_curso:
+                        continue
+
                     if nome_curso not in cursos_selecionados_set:
                         continue
 
@@ -868,8 +868,8 @@ if 'cursos' in st.session_state:
                             json_data = processar_curso(
                                 abertura,
                                 data_semana,
-                                config['path'],
-                                contador_delay_conta, 
+                                config["path"],
+                                contador_delay_conta,
                                 tipo_fluxo=nome_fluxo_ativo,
                                 data_disparo=data_disparo_manual,
                                 ano_retomada=ano_retomada,
