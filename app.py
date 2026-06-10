@@ -12,7 +12,6 @@ from difflib import SequenceMatcher
 from PIL import Image
 from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
 from src.firebase_client import buscar_aberturas_por_semana
-from src.aberturas_adapter import aberturas_para_dados_planilha
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
