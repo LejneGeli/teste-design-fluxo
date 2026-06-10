@@ -12,6 +12,8 @@ from difflib import SequenceMatcher
 from PIL import Image
 from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
 from src.firebase_client import buscar_aberturas_por_semana
+from src.firebase_client import buscar_curso_por_codigo
+
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -857,12 +859,20 @@ if 'cursos' in st.session_state:
                         if config.get("tipo") == "instagram":
                             # Instagram agora também usa a abertura do Cess-Hub.
                             # O número/código do gatilho vem do código da abertura.
-                            num_fluxo = (
-                                abertura.get("numFluxoInstagram")
-                                or abertura.get("codigoAbertura")
-                                or abertura.get("cursoId")
-                                or ""
-                            )
+                            curso_id = abertura.get("cursoId", "")
+
+                            curso_db = buscar_curso_por_codigo(curso_id)
+
+                            if not curso_db:
+                                raise Exception(
+                                    f"Curso '{curso_id}' não encontrado na coleção cursos"
+                                )
+
+                            num_fluxo = str(curso_db.get("numero", ""))
+
+                            print("Curso:", abertura.get("nomeCurso"))
+                            print("Curso ID:", curso_id)
+                            print("Numero Instagram:", num_fluxo)
 
                             json_data = processar_instagram(
                                 abertura,

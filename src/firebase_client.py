@@ -54,3 +54,18 @@ if __name__ == "__main__":
 
     for abertura in aberturas:
         print(abertura.get("nomeCurso"), "-", abertura.get("semana"))
+
+def buscar_curso_por_codigo(codigo):
+    db = get_firestore_client()
+
+    docs = (
+        db.collection("cursos")
+        .where(filter=FieldFilter("codigo", "==", codigo))
+        .limit(1)
+        .stream()
+    )
+
+    for doc in docs:
+        return doc.to_dict()
+
+    return None
