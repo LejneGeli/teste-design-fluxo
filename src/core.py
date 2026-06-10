@@ -776,6 +776,82 @@ def processar_instagram(
 
     return json.loads(conteudo)
 
+def data_curta(semana):
+    if not semana:
+        return ""
+
+    partes = str(semana).split("/")
+    if len(partes) >= 2:
+        return f"{partes[0]}/{partes[1]}"
+
+    return str(semana)
+
+
+def montar_dados_curso(abertura, tipo_fluxo="SC1"):
+    nome_curso = limpar_para_json(abertura.get("nomeCurso", ""))
+    semana = data_curta(abertura.get("semana", ""))
+
+    tag_foi_plan = f"Foi pra Planilha - {nome_curso} {semana}"
+    tag_insc_curso = f"Inscrição - {nome_curso} {semana}"
+    tag_cancel = f"Cancelar Inscrição - {nome_curso} {semana}"
+
+    dados = {
+        "nome_curso": nome_curso,
+        "webhook_link": abertura.get("webhookUnnichat", ""),
+        "cd_curso_abert": limpar_para_json(abertura.get("codigoAbertura", "")),
+
+        "tag_foi_plan": limpar_para_json(tag_foi_plan),
+        "tag_insc_curso": limpar_para_json(tag_insc_curso),
+        "tag_cancel": limpar_para_json(tag_cancel),
+
+        "tag_atrasados_f1": limpar_para_json(f"Iniciar F. - {nome_curso} {semana}"),
+        "tag_inicio_f2": limpar_para_json(f"Fluxo 2 - {nome_curso} {semana}"),
+        "tag_inicio_f3": limpar_para_json(f"Fluxo 3 - {nome_curso} {semana}"),
+        "tag_inicio_f4": limpar_para_json(f"Fluxo 4 - {nome_curso} {semana}"),
+        "tag_inicio_f5": limpar_para_json(f"Fluxo 5 - {nome_curso} {semana}"),
+        "tag_inicio_f6": limpar_para_json(f"Fluxo 6 - {nome_curso} {semana}"),
+        "tag_inicio_f7": limpar_para_json(f"Fluxo 7 - {nome_curso} {semana}"),
+        "tag_inicio_f8": limpar_para_json(f"Fluxo 8 - {nome_curso} {semana}"),
+
+        "tag_presente_f8": limpar_para_json(f"Presente - {nome_curso} {semana}"),
+        "tag_cert": limpar_para_json(f"{nome_curso} - Certificado Digital"),
+        "tag_insc_geral": limpar_para_json(f"Inscritos {semana}"),
+
+        "vol_pdf_2": "",
+        "titulo_pdf": "",
+        "gatilho_fx": limpar_para_json(abertura.get("fraseGatilho", "")),
+        "bonus_cursos": limpar_para_json((abertura.get("bonus") or {}).get("nome", "")),
+
+        "link_hotmart_raw": abertura.get("linkPagamentoUTM") or abertura.get("linkPagamentoCert", ""),
+        "cd_cert": limpar_para_json(abertura.get("codigoSiteCert", "")),
+        "cd_aulas": limpar_para_json(abertura.get("codigoSiteAula", "")),
+        "cd_pdf": limpar_para_json(abertura.get("codigoSitePDF", "")),
+
+        "tag_clicou_sc1": limpar_para_json(f"Clicou SC1 - {nome_curso} {semana}"),
+        "tag_cancelar_sc1": limpar_para_json(f"Cancelar SC1 - {nome_curso} {semana}"),
+        "tag_clicou_sc2": limpar_para_json(f"Clicou SC2 - {nome_curso} {semana}"),
+        "tag_cancelar_sc2": limpar_para_json(f"Cancelar SC2 - {nome_curso} {semana}"),
+        "tag_clicou_sc": limpar_para_json(f"Clicou SC - {nome_curso} {semana}"),
+        "tag_cancelar_sc": limpar_para_json(f"Cancelar SC - {nome_curso} {semana}"),
+
+        "tag_clicou_ret_plan": limpar_para_json(f"Clicou Retomada - {nome_curso} {semana}"),
+        "tag_cancelar_ret_plan": limpar_para_json(f"Cancelar Retomada - {nome_curso} {semana}"),
+
+        "link_cert_img": limpar_para_json(abertura.get("linkCertificado", "")),
+        "link_pdf": limpar_para_json(abertura.get("linkEbook", "")),
+    }
+
+    if tipo_fluxo == "SC1":
+        dados["tag_clicou_retro"] = dados["tag_clicou_sc1"]
+        dados["tag_cancelar_retro"] = dados["tag_cancelar_sc1"]
+    elif tipo_fluxo == "SC2":
+        dados["tag_clicou_retro"] = dados["tag_clicou_sc2"]
+        dados["tag_cancelar_retro"] = dados["tag_cancelar_sc2"]
+    else:
+        dados["tag_clicou_retro"] = dados["tag_clicou_sc"]
+        dados["tag_cancelar_retro"] = dados["tag_cancelar_sc"]
+
+    return dados
 
 def processar_curso(
     linha,
@@ -812,53 +888,43 @@ def processar_curso(
 
     data_envio_ds = calcular_data_especifica(data_envio_base, 1)
 
-    # --- 2. MAPEAMENTO GERAL DA PLANILHA ---
-    nome_curso       = limpar_para_json(linha[0])   # A  - Nome do curso
-    webhook_link     = linha[4]                     # E  - WEBHOOK Unnichat
-    cd_curso_abert   = limpar_para_json(linha[9])   # J  - Código curso + abertura
-    tag_foi_plan     = limpar_para_json(linha[11])  # L  - Tag "Foi pra Planilha"
-    tag_insc_curso   = limpar_para_json(linha[12])  # M  - Tag "Inscrição"
-    tag_cancel       = limpar_para_json(linha[13])  # N  - Tag "Cancelar Inscrição"
-    tag_atrasados_f1 = limpar_para_json(linha[14])  # O  - Tag "Iniciar F."
-    tag_inicio_f2    = limpar_para_json(linha[15])  # P  - Tag "Fluxo 2"
-    tag_inicio_f3    = limpar_para_json(linha[16])  # Q  - Tag "Fluxo 3"
-    tag_inicio_f4    = limpar_para_json(linha[17])  # R  - Tag "Fluxo 4"
-    tag_inicio_f5    = limpar_para_json(linha[18])  # S  - Tag "Fluxo 5"
-    tag_inicio_f6    = limpar_para_json(linha[19])  # T  - Tag "Fluxo 6"
-    tag_inicio_f7    = limpar_para_json(linha[20])  # U  - Tag "Fluxo 7"
-    tag_inicio_f8    = limpar_para_json(linha[21])  # V  - Tag "Fluxo 8"
-    tag_presente_f8  = limpar_para_json(linha[22])  # W  - Tag "Presente"
-    tag_cert         = limpar_para_json(linha[23])  # X  - Tag Certificado Digital
-    tag_insc_geral   = limpar_para_json(linha[24])  # Y  - Tag "Inscritos DD/MM"
-    vol_pdf_2        = limpar_para_json(linha[27])  # AB - Volume 2 do PDF
-    titulo_pdf       = limpar_para_json(linha[28])  # AC - Título do PDF volume 3
-    gatilho_fx       = limpar_para_json(linha[31])  # AF - Gatilho de início do fluxo
-    bonus_cursos     = limpar_para_json(linha[32])  # AG - Bônus
-    link_hotmart_raw = linha[33]                    # AH - Link Hotmart com XXXXXXXXXXXXXXXXX
-    cd_cert          = limpar_para_json(linha[34])  # AI - Código certificado
-    cd_aulas         = limpar_para_json(linha[35])  # AJ - Código aulas
-    cd_pdf           = limpar_para_json(linha[36])  # AK - Código PDF
+        # --- 2. MAPEAMENTO GERAL DO FIRESTORE ---
+    dados_curso = montar_dados_curso(linha, tipo_fluxo)
 
-    # COLUNAS SC (usadas apenas no modo Retroativo)
-    if tipo_fluxo == "SC1":
-        tag_clicou_retro   = limpar_para_json(linha[38]) if len(linha) > 38 else ""  # AM
-        tag_cancelar_retro = limpar_para_json(linha[39]) if len(linha) > 39 else ""  # AN
-    elif tipo_fluxo == "SC2":
-        tag_clicou_retro   = limpar_para_json(linha[40]) if len(linha) > 40 else ""  # AO
-        tag_cancelar_retro = limpar_para_json(linha[41]) if len(linha) > 41 else ""  # AP
-    else:  # SC0, SC3 e outros
-        tag_clicou_retro   = limpar_para_json(linha[42]) if len(linha) > 42 else ""  # AQ
-        tag_cancelar_retro = limpar_para_json(linha[43]) if len(linha) > 43 else ""  # AR
+    nome_curso       = dados_curso["nome_curso"]
+    webhook_link     = dados_curso["webhook_link"]
+    cd_curso_abert   = dados_curso["cd_curso_abert"]
+    tag_foi_plan     = dados_curso["tag_foi_plan"]
+    tag_insc_curso   = dados_curso["tag_insc_curso"]
+    tag_cancel       = dados_curso["tag_cancel"]
+    tag_atrasados_f1 = dados_curso["tag_atrasados_f1"]
+    tag_inicio_f2    = dados_curso["tag_inicio_f2"]
+    tag_inicio_f3    = dados_curso["tag_inicio_f3"]
+    tag_inicio_f4    = dados_curso["tag_inicio_f4"]
+    tag_inicio_f5    = dados_curso["tag_inicio_f5"]
+    tag_inicio_f6    = dados_curso["tag_inicio_f6"]
+    tag_inicio_f7    = dados_curso["tag_inicio_f7"]
+    tag_inicio_f8    = dados_curso["tag_inicio_f8"]
+    tag_presente_f8  = dados_curso["tag_presente_f8"]
+    tag_cert         = dados_curso["tag_cert"]
+    tag_insc_geral   = dados_curso["tag_insc_geral"]
+    vol_pdf_2        = dados_curso["vol_pdf_2"]
+    titulo_pdf       = dados_curso["titulo_pdf"]
+    gatilho_fx       = dados_curso["gatilho_fx"]
+    bonus_cursos     = dados_curso["bonus_cursos"]
+    link_hotmart_raw = dados_curso["link_hotmart_raw"]
+    cd_cert          = dados_curso["cd_cert"]
+    cd_aulas         = dados_curso["cd_aulas"]
+    cd_pdf           = dados_curso["cd_pdf"]
 
-    # COLUNAS RETOMADA: AS (44) = Clicou, AT (45) = Cancelar
-    tag_clicou_ret_plan   = limpar_para_json(linha[44]) if len(linha) > 44 else ""  # AS
-    tag_cancelar_ret_plan = limpar_para_json(linha[45]) if len(linha) > 45 else ""  # AT
+    tag_clicou_retro   = dados_curso["tag_clicou_retro"]
+    tag_cancelar_retro = dados_curso["tag_cancelar_retro"]
 
-    # IMAGEM CERTIFICADO: AV (47)
-    link_cert_img = limpar_para_json(linha[47]) if len(linha) > 47 else ""  # AV
+    tag_clicou_ret_plan   = dados_curso["tag_clicou_ret_plan"]
+    tag_cancelar_ret_plan = dados_curso["tag_cancelar_ret_plan"]
 
-    # LINK PDF VOLUME 3: AW (48)
-    link_pdf = limpar_para_json(linha[48]) if len(linha) > 48 else ""  # AW
+    link_cert_img = dados_curso["link_cert_img"]
+    link_pdf = dados_curso["link_pdf"]
 
     # --- 3. LÓGICA DE TAGS DINÂMICAS ---
     tag_fluxo_nome = tipo_fluxo  # SC0 → "SC0", SC3 → "SC3", cada um com seu nome
