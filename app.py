@@ -857,8 +857,9 @@ if 'cursos' in st.session_state:
                         if config.get("tipo") == "instagram":
                             # Instagram agora também usa a abertura do Cess-Hub.
                             # O número/código do gatilho vem do código da abertura.
-                            num_fluxo_instagram = (
-                                abertura.get("codigoAbertura")
+                            num_fluxo = (
+                                abertura.get("numFluxoInstagram")
+                                or abertura.get("codigoAbertura")
                                 or abertura.get("cursoId")
                                 or ""
                             )
@@ -867,7 +868,7 @@ if 'cursos' in st.session_state:
                                 abertura,
                                 data_semana,
                                 config["path"],
-                                num_fluxo_instagram,
+                                num_fluxo,
                                 config["origem"],
                             )
                         else:

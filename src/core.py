@@ -843,8 +843,14 @@ def processar_instagram(
     for tag, valor in substituicoes.items():
         conteudo = conteudo.replace(tag, str(valor))
 
-    return json.loads(conteudo)
-
+    try:
+        return json.loads(conteudo)
+    except Exception as e:
+        raise ValueError(
+         f"Erro ao converter template Instagram em JSON: {e}. "
+         f"Curso={nome_curso}, num_fluxo={num_fluxo}, link_inscricao={link_inscricao}"
+    )
+    
 def data_curta(semana):
     if not semana:
         return ""
