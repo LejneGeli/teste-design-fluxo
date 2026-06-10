@@ -658,23 +658,66 @@ def normalizar_chave(texto):
     return str(texto or "").strip().casefold()
 
 
-def montar_link_inscricao_instagram(linha):
+def montar_link_inscricao_instagram(abertura):
     """
     Monta o link de inscrição usado nos fluxos de Instagram.
 
-    Regra atual:
-      1. usar o código do curso da coluna G da aba Cursos 2026;
-      2. NÃO usar a coluna J, porque ela contém código do curso + abertura;
-      3. se a coluna G estiver vazia, tentar reaproveitar um link cessetembro.com.br
-         já presente na linha como fallback de segurança.
+    Agora a origem principal é o documento da coleção `aberturas` do Cess-Hub.
+    Mantém fallback para o formato antigo de linha/lista para não quebrar testes
+    antigos enquanto a migração não termina.
+
+    Prioridade para Firestore:
+      1. linkInscricaoInstagram, se existir futuramente;
+      2. linkWhatsApp, porque já vem pronto com a frase-gatilho;
+      3. cursoId como URL curta: https://cessetembro.com.br/{cursoId};
+      4. codigoSiteAula como fallback;
+      5. primeiro link cessetembro.com.br encontrado.
     """
-    codigo_curso = limpar_para_json(linha[6]) if len(linha) > 6 else ""
+    if not abertura:
+        return ""
+
+    # Formato novo: dict vindo do Firestore.
+    if isinstance(abertura, dict):
+        candidatos = [
+            abertura.get("linkInscricaoInstagram"),
+            abertura.get("linkWhatsApp"),
+        ]
+
+        for valor in candidatos:
+            valor = limpar_para_json(valor)
+            if valor:
+                return valor
+
+        codigo_curso = limpar_para_json(
+            abertura.get("cursoId")
+            or abertura.get("codigoSiteAula")
+            or ""
+        )
+
+        if codigo_curso:
+            if codigo_curso.startswith("http"):
+                return codigo_curso
+            return f"https://cessetembro.com.br/{codigo_curso.lstrip('/')}"
+
+        for valor in abertura.values():
+            valor_str = str(valor or "").strip()
+            if (
+                "cessetembro.com.br/" in valor_str
+                and "setecertificados.com.br" not in valor_str
+                and "webhook" not in valor_str.lower()
+            ):
+                return valor_str
+
+        return ""
+
+    # Fallback antigo: lista/linha da planilha.
+    codigo_curso = limpar_para_json(abertura[6]) if len(abertura) > 6 else ""
     if codigo_curso:
         if codigo_curso.startswith("http"):
             return codigo_curso
         return f"https://cessetembro.com.br/{codigo_curso.lstrip('/')}"
 
-    for valor in linha:
+    for valor in abertura:
         valor_str = str(valor or "").strip()
         if (
             "cessetembro.com.br/" in valor_str
@@ -733,22 +776,44 @@ def montar_tags_instagram(nome_curso, data_inicio_curso, origem):
 
 
 def processar_instagram(
-    linha,
+    abertura,
     data_ancora,
     path_template,
-    num_fluxo,
-    origem,
+    num_fluxo=None,
+    origem="Comentário",
 ):
     """
     Processa templates de Instagram.
 
-    Esses fluxos usam uma aba auxiliar, Instagram_Infos, para buscar o número
-    do gatilho. O restante é montado automaticamente a partir do curso,
-    da data da semana e do padrão de tags.
+    Agora recebe o documento da coleção `aberturas` do Cess-Hub, igual ao fluxo
+    normal. As tags seguem sendo padronizadas pelo sistema.
+
+    Campos principais usados:
+      - nomeCurso
+      - semana/data_ancora
+      - codigoAbertura ou cursoId para o número/código do fluxo
+      - linkWhatsApp/cursoId para o link de inscrição
+
+    Também mantém compatibilidade com a antiga linha/lista da planilha.
     """
-    nome_curso = limpar_para_json(linha[0]) if linha else ""
-    num_fluxo = limpar_para_json(num_fluxo)
-    link_inscricao = montar_link_inscricao_instagram(linha)
+    if isinstance(abertura, dict):
+        nome_curso = limpar_para_json(abertura.get("nomeCurso", ""))
+
+        # O número/código do fluxo pode vir por parâmetro. Se não vier,
+        # usamos o código da abertura, que identifica a safra/reabertura.
+        num_fluxo_final = limpar_para_json(
+            num_fluxo
+            or abertura.get("codigoAbertura")
+            or abertura.get("cursoId")
+            or ""
+        )
+
+        link_inscricao = montar_link_inscricao_instagram(abertura)
+
+    else:
+        nome_curso = limpar_para_json(abertura[0]) if abertura else ""
+        num_fluxo_final = limpar_para_json(num_fluxo)
+        link_inscricao = montar_link_inscricao_instagram(abertura)
 
     tags = montar_tags_instagram(nome_curso, data_ancora, origem)
 
@@ -759,9 +824,13 @@ def processar_instagram(
 
     substituicoes = {
         "{{curso}}": nome_curso,
-        "{{num_fluxo}}": num_fluxo,
+        "{{NOME_CURSO}}": nome_curso,
+        "{{num_fluxo}}": num_fluxo_final,
+        "{{NUM_FLUXO}}": num_fluxo_final,
         "{{link_inscricao}}": link_inscricao,
+        "{{LINK_INSCRICAO}}": link_inscricao,
         "{{data_inicio_curso}}": data_ancora,
+        "{{DT_INICIO_CURSO_FORMAT}}": data_ancora,
 
         f"{{{{tag_ig_{prefixo}_interesse}}}}": tags["interesse"],
         f"{{{{tag_ig_{prefixo}_depois}}}}": tags["depois"],

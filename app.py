@@ -800,10 +800,6 @@ if 'cursos' in st.session_state:
 
         zip_buffer = io.BytesIO()
         arquivos_criados = 0
-        mapeamento_contas = st.session_state.get('mapeamento_contas', {})
-        cores_por_indice = st.session_state.get('cores_por_indice', {})
-        instagram_infos = st.session_state.get('instagram_infos', {})
-
         todos_os_cursos = st.session_state['cursos']
         cursos_selecionados_set = set(curso_filtro if curso_filtro else todos_os_cursos)
         
@@ -859,11 +855,21 @@ if 'cursos' in st.session_state:
 
                     try:
                         if config.get("tipo") == "instagram":
-                            status_visual(
-                                f"⚠️ Instagram ainda não foi migrado para o Cess-Hub. Fluxo ignorado para '{nome_curso}'.",
-                                "warning"
+                            # Instagram agora também usa a abertura do Cess-Hub.
+                            # O número/código do gatilho vem do código da abertura.
+                            num_fluxo_instagram = (
+                                abertura.get("codigoAbertura")
+                                or abertura.get("cursoId")
+                                or ""
                             )
-                            continue
+
+                            json_data = processar_instagram(
+                                abertura,
+                                data_semana,
+                                config["path"],
+                                num_fluxo_instagram,
+                                config["origem"],
+                            )
                         else:
                             json_data = processar_curso(
                                 abertura,
