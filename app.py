@@ -18,16 +18,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-try:
-    from src.drive_sync import (
-        conectar_planilha,
-        buscar_mapeamento_contas,
-        buscar_cores_linhas,
-    )
-except Exception as e:
-    import streamlit as st
-    st.error(f"Erro ao importar drive_sync.py: {e}")
-    st.stop()
+# Integração com planilhas removida nesta versão.
+# A fonte de dados agora é a coleção "aberturas" do Cess-Hub/Firestore.
 
 # Configuração da Interface
 favicon_path = os.path.join(BASE_DIR, "logo-site.png")
@@ -367,7 +359,7 @@ def ativar_enter_proximo_botao():
     disponível do processo.
 
     Ordem lógica:
-      1. Buscar Cursos na Planilha
+      1. Buscar Cursos no Cess-Hub
       2. Gerar Arquivos e Preparar ZIP
       3. Baixar Arquivos (.ZIP)
 
@@ -432,7 +424,7 @@ def ativar_enter_proximo_botao():
           const nextButton =
             findEnabledButton(['baixar']) ||
             findEnabledButton(['gerar', 'zip']) ||
-            findEnabledButton(['buscar', 'planilha']);
+            findEnabledButton(['buscar', 'cess-hub']) || findEnabledButton(['buscar', 'cursos']);
 
           if (nextButton) {
             window.parent.__cessLastEnterClick = now;
@@ -837,14 +829,11 @@ if 'cursos' in st.session_state:
                 # Para RETOMADA: conta o total de cursos ANTES do loop para calcular o delay certo
                 total_cursos_semana = None
                 if nome_fluxo_ativo == "RETOMADA":
-                    total_cursos_semana = 0
-                    for i in range(st.session_state['index_inicio'], len(st.session_state['dados_planilha'])):
-                        linha_aux = st.session_state['dados_planilha'][i]
-                        if not linha_aux or not linha_aux[0].strip() or (len(linha_aux) > 1 and "Semana" in str(linha_aux[1])):
-                            break
-                        nome_aux = linha_aux[0].strip()
-                        if nome_aux in cursos_selecionados_set:
-                            total_cursos_semana += 1
+                    total_cursos_semana = sum(
+                        1
+                        for abertura_aux in st.session_state["dados_planilha"]
+                        if abertura_aux.get("nomeCurso", "").strip() in cursos_selecionados_set
+                    )
                 
                 for i in range(st.session_state['index_inicio'], len(st.session_state['dados_planilha'])):
                     linha = st.session_state['dados_planilha'][i]
@@ -858,8 +847,9 @@ if 'cursos' in st.session_state:
                     tipo_evento = identificar_tipo_evento(nome_curso)
                     modo_congresso = tipo_evento == "congresso"
 
-                    cor_curso = cores_por_indice.get(i, "#FFFFFF")
-                    conta_pasta = mapeamento_contas.get(cor_curso, "Sem_Conta")
+                    # Antes a conta vinha da cor da linha na planilha.
+                    # Agora vem direto do documento de abertura no Cess-Hub.
+                    conta_pasta = abertura.get("contaAPI", "Sem_Conta") or "Sem_Conta"
 
                     if conta_pasta not in contadores_por_conta:
                         contadores_por_conta[conta_pasta] = 0
@@ -869,26 +859,16 @@ if 'cursos' in st.session_state:
 
                     try:
                         if config.get("tipo") == "instagram":
-                            info_ig, motivo_ig = buscar_info_instagram_por_curso(nome_curso, instagram_infos)
-                            if not info_ig:
-                                status_visual(
-                                    f"⚠️ Instagram: curso '{nome_curso}' não encontrado na aba Instagram_Infos ({motivo_ig}).",
-                                    "warning"
-                                )
-                                continue
-
-                            json_data = processar_instagram(
-                                linha,
-                                data_semana,
-                                config["path"],
-                                info_ig["num_fluxo"],
-                                config["origem"],
+                            status_visual(
+                                f"⚠️ Instagram ainda não foi migrado para o Cess-Hub. Fluxo ignorado para '{nome_curso}'.",
+                                "warning"
                             )
+                            continue
                         else:
                             json_data = processar_curso(
-                                linha, 
-                                data_semana, 
-                                config['path'], 
+                                abertura,
+                                data_semana,
+                                config['path'],
                                 contador_delay_conta, 
                                 tipo_fluxo=nome_fluxo_ativo,
                                 data_disparo=data_disparo_manual,
