@@ -25,4 +25,4 @@ urllib3==2.6.3
 streamlit
 pandas
 python-dotenv
-firebase-admingi
+firebase-admin

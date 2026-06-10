@@ -752,18 +752,14 @@ if buscar_planilha:
             if not aberturas:
                 status_visual(f"❌ Nenhuma abertura encontrada para '{data_busca}' no Cess-Hub.", "error")
             else:
-                dados = aberturas_para_dados_planilha(aberturas)
                 cursos_encontrados = [
-                    linha[0].strip()
-                    for linha in dados[1:]
-                    if linha and linha[0].strip()
-                ]
-
-                inicio = 1
-
-                st.session_state["cursos"] = cursos_encontrados
-                st.session_state["dados_planilha"] = dados
-                st.session_state["index_inicio"] = inicio
+                a.get("nomeCurso", "")
+                for a in aberturas
+            ]
+                
+                st.session_state["cursos"] = [a.get("nomeCurso", "") for a in aberturas]
+                st.session_state["dados_planilha"] = aberturas
+                st.session_state["index_inicio"] = 0
 
                 # Temporário: como ainda não migramos mapeamento por cor/Instagram,
                 # deixamos vazio para não quebrar o restante do sistema.

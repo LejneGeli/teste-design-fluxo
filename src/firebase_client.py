@@ -52,10 +52,8 @@ if __name__ == "__main__":
     aberturas = buscar_aberturas_por_semana("13/04/2026")
 
 if __name__ == "__main__":
-    from aberturas_adapter import aberturas_para_dados_planilha
 
     aberturas = buscar_aberturas_por_semana("13/04/2026")
-    dados_fake = aberturas_para_dados_planilha(aberturas)
 
     for linha in dados_fake[1:]:
         print("Curso:", linha[0])
