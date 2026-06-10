@@ -11,9 +11,7 @@ import unicodedata
 from difflib import SequenceMatcher
 from PIL import Image
 from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
-from src.firebase_client import buscar_aberturas_por_semana
-from src.firebase_client import buscar_curso_por_codigo
-
+from src.firebase_client import buscar_aberturas_por_semana, buscar_curso_por_codigo
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
