@@ -10,6 +10,9 @@ import base64
 import unicodedata
 from difflib import SequenceMatcher
 from PIL import Image
+from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
+from src.firebase_client import buscar_aberturas_por_semana
+from src.aberturas_adapter import aberturas_para_dados_planilha
 
 # Garante que o Python encontra src/ independente de onde o Streamlit é iniciado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,8 +29,6 @@ except Exception as e:
     import streamlit as st
     st.error(f"Erro ao importar drive_sync.py: {e}")
     st.stop()
-    
-from src.core import processar_curso, obter_template_whatsapp, processar_instagram, normalizar_chave
 
 # Configuração da Interface
 favicon_path = os.path.join(BASE_DIR, "logo-site.png")
@@ -615,7 +616,7 @@ TEMPLATES = {
     "17": {"nome": "F5.1",          "path": template_path("esqueleto_fluxo_5.1.json"),      "subpasta": "Fluxo_F5_1"},
     "8":  {"nome": "Fluxo 6",       "path": template_path("esqueleto_fluxo_6.json"),        "subpasta": "Fluxo_6"},
     "9":  {"nome": "Fluxo 7",       "path": template_path("esqueleto_fluxo_7.json"),        "subpasta": "Fluxo_7"},
-    "19": {"nome": "SC0",           "path": template_path("esqueleto_fluxo_sc3.json"),      "subpasta": "Fluxo_SC0"},
+    "19": {"nome": "SC0",           "path": template_path("esqueleto_fluxo_sc0.json"),      "subpasta": "Fluxo_SC0"},
     "11": {"nome": "SC1",           "path": template_path("esqueleto_fluxo_sc1.json"),      "subpasta": "Fluxo_SC1"},
     "12": {"nome": "SC2",           "path": template_path("esqueleto_fluxo_sc2.json"),      "subpasta": "Fluxo_SC2"},
     "13": {"nome": "SC3",           "path": template_path("esqueleto_fluxo_sc3.json"),      "subpasta": "Fluxo_SC3"},
@@ -731,66 +732,53 @@ if is_retro:
 
 # --- 2. BUSCA DE DADOS ---
 buscar_planilha = st.button(
-    "🔍 Buscar Cursos na Planilha",
+    "🔍 Buscar Cursos no Cess-Hub",
     use_container_width=True,
     disabled=not (ids_fluxos and data_semana)
 )
 
 if buscar_planilha:
     st.session_state.etapa = 2
-    
-    with st.spinner("Acessando Google Sheets..."):
-        client = conectar_planilha("Informações Webhook")
-        if client:
-            try:
-                aba = client.open("Informações Webhook").worksheet("Cursos 2026")
-                dados = aba.get_all_values(value_render_option='FORMATTED_VALUE')
-                
-                inicio = next((i + 2 for i, l in enumerate(dados) if len(l) > 1 and data_semana in str(l[1])), None)
-                
-                if inicio:
-                    cursos_encontrados = []
-                    for i in range(inicio, len(dados)):
-                        linha = dados[i]
-                        if not linha or not linha[0].strip() or (len(linha) > 1 and "Semana" in str(linha[1])):
-                            break
-                        cursos_encontrados.append(linha[0].strip())
-                    
-                    # Lê as cores das linhas e monta o mapeamento de cores -> contas
-                    with st.spinner("Lendo cores das contas na planilha..."):
-                        mapeamento_contas = buscar_mapeamento_contas(client, "Informações Webhook")
 
-                        cores_lista = buscar_cores_linhas(
-                            client,
-                            "Informações Webhook",
-                            "Cursos 2026",
-                            inicio + 1,
-                            len(cursos_encontrados),
-                        )
+    with st.spinner("Buscando aberturas no Cess-Hub..."):
+        try:
+            # O usuário digita 13/04, mas no Firestore está 13/04/2026
+            data_busca = data_semana
 
-                    cores_por_indice = {
-                        inicio + j: cor
-                        for j, cor in enumerate(cores_lista)
-                    }
+            if len(data_busca) == 5:
+                data_busca = f"{data_busca}/2026"
 
-                    st.session_state['cursos'] = cursos_encontrados
-                    st.session_state['dados_planilha'] = dados
-                    st.session_state['index_inicio'] = inicio
-                    st.session_state['mapeamento_contas'] = mapeamento_contas
-                    st.session_state['cores_por_indice'] = cores_por_indice
+            aberturas = buscar_aberturas_por_semana(data_busca)
 
-                    with st.spinner("Lendo informações do Instagram..."):
-                        st.session_state['instagram_infos'] = buscar_infos_instagram(client)
+            if not aberturas:
+                status_visual(f"❌ Nenhuma abertura encontrada para '{data_busca}' no Cess-Hub.", "error")
+            else:
+                dados = aberturas_para_dados_planilha(aberturas)
+                cursos_encontrados = [
+                    linha[0].strip()
+                    for linha in dados[1:]
+                    if linha and linha[0].strip()
+                ]
 
-                    if mapeamento_contas:
-                        contas = ", ".join(sorted(set(mapeamento_contas.values())))
-                        status_visual(f"✅ {len(cursos_encontrados)} cursos encontrados. Contas detectadas: {contas}.", "success")
-                    else:
-                        status_visual(f"✅ {len(cursos_encontrados)} cursos encontrados. ⚠️ As cores das contas não foram detectadas.", "warning")
-                else:
-                    status_visual(f"❌ A data '{data_semana}' não foi encontrada na Coluna B da planilha.", "error")
-            except Exception as e:
-                status_visual(f"❌ Erro ao abrir a planilha/aba: {e}", "error")
+                inicio = 1
+
+                st.session_state["cursos"] = cursos_encontrados
+                st.session_state["dados_planilha"] = dados
+                st.session_state["index_inicio"] = inicio
+
+                # Temporário: como ainda não migramos mapeamento por cor/Instagram,
+                # deixamos vazio para não quebrar o restante do sistema.
+                st.session_state["mapeamento_contas"] = {}
+                st.session_state["cores_por_indice"] = {}
+                st.session_state["instagram_infos"] = {}
+
+                status_visual(
+                    f"✅ {len(cursos_encontrados)} curso(s) encontrado(s) no Cess-Hub para {data_busca}.",
+                    "success"
+                )
+
+        except Exception as e:
+            status_visual(f"❌ Erro ao buscar dados no Cess-Hub: {e}", "error")
 
 # --- 3. FILTRO E GERAÇÃO ---
 if 'cursos' in st.session_state:

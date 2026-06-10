@@ -313,7 +313,7 @@
           "type": "remove_tag",
           "unniiaAtributionOnly": false,
           "tags": [
-            "{{TAG_CANCEL_CURSO}} - {{NOME_CURSO}} {{DT_INICIO_CURSO_FORMAT}}"
+            "{{TAG_CANCEL_CURSO}}"
           ]
         }
       },
@@ -440,7 +440,7 @@
           "type": "add_tag",
           "userResourceGroupSendRandomic": false,
           "tags": [
-            "{{TAG_CANCEL_CURSO}} - {{NOME_CURSO}} {{DT_INICIO_CURSO_FORMAT}}"
+            "{{TAG_CANCEL_CURSO}}"
           ]
         }
       },

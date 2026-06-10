@@ -912,18 +912,16 @@ def processar_curso(
     with open(path_template, 'r', encoding='utf-8') as f:
         conteudo = f.read()
 
-    # Quando SC0, renomeia o fluxo no template (que é o mesmo do SC3)
-    if tipo_fluxo == "SC0":
-        conteudo = conteudo.replace("SC3 ", "SC0 ")
-
     substituicoes = {
         "{{NOME_CURSO}}":                   nome_curso,
+        "{{curso}}":                        nome_curso,
         "{{GATILHO_INICIO_FX}}":            gatilho_fx,
         "{{TAG_FOI_PLANILHA}}":             tag_foi_plan,
         "{{TAG_INSC_CURSO}}":               tag_insc_curso,
         "{{TAG_INSC_GERAL}}":               tag_insc_geral,
         "{{TAG_CANCEL_CURSO}}":             tag_cancel,
         "{{TAG_CERT_CURSO}}":               tag_cert,
+        "{{tag_cert_comprado}}":            tag_cert,
         "{{CD_CURSO_CERT}}":                cd_cert,
         "{{CD_CURSO_AULAS}}":               cd_aulas,
         "{{CD_CURSO_PDF}}":                 cd_pdf,
@@ -933,12 +931,14 @@ def processar_curso(
         "{{LINK_WEBHOOK_PLANILHA}}":        webhook_link,
         "{{DT_INICIO_CURSO_EXT}}":          data_extenso,
         "{{DT_INICIO_CURSO_FORMAT}}":       data_ancora,
+        "{{data_inicio_ext}}":              data_extenso,
         "{{DT_AULAS_DISP_CURSO_FORMAT}}":   data_aulas_ate,
         "{{dt_final_semana}}":              str(dt_final_semana),
         "{{DT_FINAL_SEMANA}}":              str(dt_final_semana),
         "{{DT_FINAL_SEMANA_FORMAT}}":       dt_final_semana_format,
         "{{DT_FIM_CERT_FORMAT}}":           data_prazo_cert,
         "{{LINK_CERTIFICADO_IMG}}":         link_cert_img,
+        "{{link_cert_img}}":                link_cert_img,
         "{{TAG_INIC_F_CURSO}}":             tag_atrasados_f1,
         "{{TAG_INIC_F2_CURSO}}":            tag_inicio_f2,
         "{{TAG_INIC_F3_CURSO}}":            tag_inicio_f3,
@@ -981,9 +981,9 @@ def processar_curso(
         "{TAG_INSC_SEMANA3}":               tag_sem3,
         # Timestamps SC1
         "{{DT_SC_1230_VARIA}}":             str(gerar_timestamp(data_envio_base, "12:30", offset_atual)),
-        "{{DT_SC_1900_VARIA}}":             str(gerar_timestamp(data_envio_base, "19:00", offset_atual)),
-        "{{DT_SC_2100_VARIA}}":             str(gerar_timestamp(data_envio_base, "21:00", offset_atual)),
-        "{{DT_SC_DS_0740_VARIA}}":          str(gerar_timestamp(data_envio_ds, "07:40", offset_atual)),
+        "{{DT_SC_1930_VARIA}}":             str(gerar_timestamp(data_envio_base, "19:30", offset_atual)),
+        "{{DT_SC_2130_VARIA}}":             str(gerar_timestamp(data_envio_base, "21:30", offset_atual)),
+        "{{DT_SC_DS_0750_VARIA}}":          str(gerar_timestamp(data_envio_ds, "07:50", offset_atual)),
         # Timestamps SC2
         "{{DT_SC2_1330_VARIA}}":            str(gerar_timestamp(data_envio_base, "13:30", offset_atual)),
         "{{DT_SC2_1930_VARIA}}":            str(gerar_timestamp(data_envio_base, "19:30", offset_atual)),
@@ -992,9 +992,14 @@ def processar_curso(
         # Timestamps SC3
         "{{DT_SC3_1400_VARIA}}":            str(gerar_timestamp(data_envio_base, "14:00", offset_atual)),
         "{{DT_RETOMADA_0800_VARIA}}":       str(gerar_timestamp(data_envio_base, "08:00", offset_atual)),
-        "{{DT_SC3_1900_VARIA}}":            str(gerar_timestamp(data_envio_base, "19:00", offset_atual)),
-        "{{DT_SC3_2100_VARIA}}":            str(gerar_timestamp(data_envio_base, "21:00", offset_atual)),
+        "{{DT_SC3_1900_VARIA}}":            str(gerar_timestamp(data_envio_base, "19:30", offset_atual)),
+        "{{DT_SC3_2100_VARIA}}":            str(gerar_timestamp(data_envio_base, "21:30", offset_atual)),
         "{{DT_SC3_DS_0740_VARIA}}":         str(gerar_timestamp(data_envio_ds, "07:40", offset_atual)),
+        # Timestamps SC0
+        "{{dt_sc0_1300}}":                  str(gerar_timestamp(data_envio_base, "13:00", offset_atual)),
+        "{{dt_sc0_1830}}":                  str(gerar_timestamp(data_envio_base, "18:30", offset_atual)),
+        "{{dt_sc0_2030}}":                  str(gerar_timestamp(data_envio_base, "20:30", offset_atual)),
+        "{{dt_sc0_depois_0730}}":           str(gerar_timestamp(data_envio_ds, "07:30", offset_atual)),
         # Links SC
         "{{LINK_HOTMART_SC_M1_T1}}":        fix_link_sc("M1"),
         "{{LINK_HOTMART_SC_M2_T1}}":        fix_link_sc("M2"),
@@ -1009,6 +1014,7 @@ def processar_curso(
         "{{LINK_HOTMART_SC_mudei1_T1}}":    fix_link_sc("mudei1"),
         "{{LINK_HOTMART_SC_mudei2_T1}}":    fix_link_sc("mudei2"),
         "{{UTM_SC_LOJA}}":                  f"utm_source={tipo_fluxo}",
+        "{{utm_sc}}":                       f"utm_source={tipo_fluxo}",
         "{{LINK_HOTMART_SC2.1}}":           fix_link_padrao("novat"),
         # Retomada
         "{{DELAY_RETOMADA_S}}":             str(delay_por_curso),

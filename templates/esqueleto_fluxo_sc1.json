@@ -45,7 +45,7 @@
               "display_text": "Garantir Agora!"
             }
           },
-          "buttonsBodyText": " Verificação Concluída! ✅\n\nSeu acesso gratuito ao curso encerra dia {{DT_AULAS_DISP_CURSO_FORMAT}} às 23:59.\n📺 Link para assistir hoje:\nhttps://cessetembro.com.br/{{CD_CURSO_AULAS}}?utm_source=SC1_T1&utm_medium=M1A&utm_campaign={{CD_CURSO_ABERT}}\n\nO sistema também liberou a opção para adquirir o certificado e aumentar o tempo de acesso.\n\nO que você garante agora:\n🎓 Certificado de 40h: válido para currículo e horas complementares\n📚 Materiais do curso\n⏳ +2 meses de acesso: para assistir com calma (opcional por 9,90)\n\nGaranta sua conquista antes que o acesso expire. 👇",
+          "buttonsBodyText": " Verificação Concluída! ✅\n\nSeu acesso gratuito ao curso encerra dia {{DT_AULAS_DISP_CURSO_FORMAT}} às 23:59.\n📺 Link para assistir hoje:\nhttps://cessetembro.com.br/{{CD_CURSO_AULAS}}?utm_source=SC1_T1&utm_medium=M1A&utm_campaign={{CD_CURSO_ABERT}}\n\nO sistema também liberou a opção para adquirir o certificado e/ou aumentar o tempo de acesso.\n\nO que você garante agora:\n🎓 Certificado de 40h: válido para currículo e horas complementares\n📚 Materiais do curso\n⏳ +2 meses de acesso: para assistir com calma (opcional por 9,90)\n\nGaranta sua conquista antes que o acesso expire. 👇",
           "links": [
             {
               "url": "https://cessetembro.com.br/aulas9toxclin?utm_source=SC1_T1&utm_medium=M1A&utm_campaign=9toxclin15",
@@ -404,7 +404,7 @@
           "sendMessagesIntervalRangeType": "minutes",
           "isComercialInterval": false,
           "sendAt": {
-            "seconds": 1775041260,
+            "seconds": {{DT_SC_DS_0750_VARIA}},
             "nanoseconds": 0
           },
           "type": "shipping-date",
@@ -1570,7 +1570,7 @@
           "commercialTimeRangeMinutes": false,
           "type": "shipping-date",
           "sendAt": {
-            "seconds": 1775002860,
+            "seconds": {{DT_SC_2130_VARIA}},
             "nanoseconds": 0
           },
           "isComercialInterval": false,
@@ -1933,7 +1933,7 @@
         "id": "U7q73lrsZQvaBLNItMBS",
         "delay": {
           "sendAt": {
-            "seconds": 1774995660,
+            "seconds": {{DT_SC_1930_VARIA}},
             "nanoseconds": 0
           },
           "isComercialInterval": false,
@@ -2379,9 +2379,9 @@
               "conditions": [
                 {
                   "tags": [
-                    "Inscritos 30/03",
-                    "Inscritos 06/04",
-                    "Inscritos 13/04"
+                    "{TAG_INSC_SEMANA1}",
+                    "{TAG_INSC_SEMANA2}",
+                    "{TAG_INSC_SEMANA3}"
                   ],
                   "type": "contains-some-tag"
                 }
@@ -3326,7 +3326,7 @@
         "delay": {
           "isComercialInterval": false,
           "sendAt": {
-            "seconds": 1774972260,
+            "seconds": {{DT_SC_1230_VARIA}},
             "nanoseconds": 0
           },
           "sendMessagesIntervalRangeType": "minutes",
