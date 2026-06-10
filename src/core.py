@@ -659,37 +659,13 @@ def normalizar_chave(texto):
 
 
 def montar_link_inscricao_instagram(abertura):
-    """
-    Monta o link de inscrição usado nos fluxos de Instagram.
-
-    Agora a origem principal é o documento da coleção `aberturas` do Cess-Hub.
-    Mantém fallback para o formato antigo de linha/lista para não quebrar testes
-    antigos enquanto a migração não termina.
-
-    Prioridade para Firestore:
-      1. linkInscricaoInstagram, se existir futuramente;
-      2. linkWhatsApp, porque já vem pronto com a frase-gatilho;
-      3. cursoId como URL curta: https://cessetembro.com.br/{cursoId};
-      4. codigoSiteAula como fallback;
-      5. primeiro link cessetembro.com.br encontrado.
-    """
     if not abertura:
         return ""
 
-    # Formato novo: dict vindo do Firestore.
     if isinstance(abertura, dict):
-        candidatos = [
-            abertura.get("linkInscricaoInstagram"),
-            abertura.get("linkWhatsApp"),
-        ]
-
-        for valor in candidatos:
-            valor = limpar_para_json(valor)
-            if valor:
-                return valor
-
         codigo_curso = limpar_para_json(
             abertura.get("cursoId")
+            or abertura.get("codigo")
             or abertura.get("codigoSiteAula")
             or ""
         )
@@ -699,16 +675,16 @@ def montar_link_inscricao_instagram(abertura):
                 return codigo_curso
             return f"https://cessetembro.com.br/{codigo_curso.lstrip('/')}"
 
-        for valor in abertura.values():
-            valor_str = str(valor or "").strip()
-            if (
-                "cessetembro.com.br/" in valor_str
-                and "setecertificados.com.br" not in valor_str
-                and "webhook" not in valor_str.lower()
-            ):
-                return valor_str
-
         return ""
+
+    codigo_curso = limpar_para_json(abertura[6]) if len(abertura) > 6 else ""
+
+    if codigo_curso:
+        if codigo_curso.startswith("http"):
+            return codigo_curso
+        return f"https://cessetembro.com.br/{codigo_curso.lstrip('/')}"
+
+    return ""
 
     # Fallback antigo: lista/linha da planilha.
     codigo_curso = limpar_para_json(abertura[6]) if len(abertura) > 6 else ""
@@ -850,7 +826,7 @@ def processar_instagram(
          f"Erro ao converter template Instagram em JSON: {e}. "
          f"Curso={nome_curso}, num_fluxo={num_fluxo}, link_inscricao={link_inscricao}"
     )
-    
+
 def data_curta(semana):
     if not semana:
         return ""
